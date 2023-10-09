@@ -63,7 +63,7 @@ All the parameters are optional:
 - `submit` is optional
 - `ref="form"` is optional (setting it will call HTML5 validation on the form before submit).
 
-For example, the minimal form, just for the sake of `submitting`:
+For example, the minimal use, just for the sake of `submitting`:
 
 ```ts
 import { useForm } from "vue-valibot-form"
@@ -77,4 +77,13 @@ const { submit, submitting } = useForm({
 
 // Call submit from somewhere else.
 await submit()
+```
+
+For that particular use, there is a shortcut:
+
+```ts
+const { submit, submitting } = useForm(async () => {
+  // submitting is true during this callback.
+  await api.post()
+})
 ```

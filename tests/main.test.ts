@@ -79,4 +79,9 @@ test("no options", async () => {
 	expect(await submit()).toBeUndefined()
 })
 
+test("submit shortcut", async () => {
+	const { submit } = useForm(() => 123)
+	expect(await submit()).toBe(123)
+})
+
 // TODO: test submitting ref

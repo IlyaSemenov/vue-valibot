@@ -14,7 +14,7 @@ export interface FormComposable<Result> {
 	errors: Ref<FlatErrors>
 }
 
-export function useForm<Input, Result>(options?: {
+export function useForm<Input, Result>(options: {
 	fields?: Input | Ref<Input | undefined>
 	schema?: never
 	submit?: (data: Input) => Result | PromiseLike<Result>
@@ -25,6 +25,10 @@ export function useForm<Input, ValidInput, Result>(options: {
 	schema?: BaseSchema<Input, ValidInput> | BaseSchemaAsync<Input, ValidInput>
 	submit?: (data: ValidInput) => Result | PromiseLike<Result>
 }): FormComposable<Result>
+
+export function useForm<Result>(
+	submit?: () => Result | PromiseLike<Result>,
+): FormComposable<Result>
 
 /**
  * @example
@@ -49,12 +53,20 @@ export function useForm<Input, ValidInput, Result>(options: {
  * </form>
  */
 export function useForm<Input, ValidInput, Result>(
-	options: {
-		fields?: Input | Ref<Input | undefined>
-		schema?: BaseSchema<Input, ValidInput> | BaseSchemaAsync<Input, ValidInput>
-		submit?: (data: ValidInput) => Result | PromiseLike<Result>
-	} = {},
+	optionsOrSubmit?:
+		| {
+				fields?: Input | Ref<Input | undefined>
+				schema?:
+					| BaseSchema<Input, ValidInput>
+					| BaseSchemaAsync<Input, ValidInput>
+				submit?: (data: ValidInput) => Result | PromiseLike<Result>
+		  }
+		| (() => Result | PromiseLike<Result>),
 ) {
+	const options =
+		typeof optionsOrSubmit === "function"
+			? { submit: optionsOrSubmit }
+			: optionsOrSubmit ?? {}
 	const { schema } = options
 	const form = ref<HTMLFormElement>()
 	// TODO: type using FlatErrors<S> from the schema

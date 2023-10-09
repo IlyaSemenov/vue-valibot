@@ -50,11 +50,16 @@ useForm({
 	},
 })
 
-// Test that there can be no fields and no schema
+// Test that there can be only submit handler
 useForm({
 	async submit(input) {
 		expectType<unknown>(input)
 	},
+})
+
+// Test shortcut syntax of having only submit handler
+useForm(() => {
+	// Do nothing
 })
 
 // Test that there can be no submit handler
@@ -72,3 +77,7 @@ const { submit: submitNumber } = useForm({
 	},
 })
 expectType<() => Promise<number | undefined>>(submitNumber)
+
+// Test that shortcut submit callback return value type is passed
+const { submit: submitNumberShortcut } = useForm(() => 123)
+expectType<() => Promise<number | undefined>>(submitNumberShortcut)
