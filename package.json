@@ -1,7 +1,7 @@
 {
   "name": "vue-valibot-form",
   "description": "Vue composable for form validation with valibot",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/IlyaSemenov/vue-valibot-form"
