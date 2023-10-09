@@ -1,0 +1,12 @@
+{
+	"extends": "@tsconfig/recommended/tsconfig.json",
+	"include": ["src", "tests", "test-d"],
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "Node",
+		"paths": {
+			"vue-valibot-form": ["./src"]
+		}
+	}
+}
