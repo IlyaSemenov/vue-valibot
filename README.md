@@ -27,7 +27,7 @@ const fields = reactive({
 const { form, submit, submitting, errors } = useForm({
   fields,
   schema: v.object({
-    foo: v.string([v.toTrimmed(), v.nonEmpty()]),
+    foo: v.string([v.toTrimmed(), v.minLength(1)]),
   }),
   async submit(input) {
     // Input is validated (and typed) against the schema.
