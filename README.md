@@ -34,7 +34,7 @@ const { form, submit, submitting, errors } = useForm({
     const res = await api.post(input)
     if (!res) {
       // errors is valibot's FlatErrors.
-      errors.value = { root: ["Failed to submit."] }
+      errors.value = { root: ["Failed to submit."], nested: {} }
     }
   },
 })
