@@ -1,8 +1,8 @@
-# vue
+# vue-valibot-form
 
-A Vue3 composable for handling form submit, with optional validation using [valibot](https://valibot.dev/).
+Minimalistic Vue3 composable for handling form submit, with optional validation using [valibot](https://valibot.dev/).
 
-Unlike FormKit and others, keeps things simple and doesn't interfere with neither data nor the UI code.
+Unlike FormKit, VeeValidate and others, keeps things simple and doesn't interfere with neither data storage nor the UI workflow.
 
 ## Install
 
