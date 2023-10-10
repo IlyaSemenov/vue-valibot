@@ -1,6 +1,6 @@
 {
   "name": "vue-valibot-form",
-  "description": "Vue composable for form validation with valibot",
+  "description": "Minimalistic Vue3 composable for handling form submit",
   "version": "1.1.0",
   "repository": {
     "type": "git",
