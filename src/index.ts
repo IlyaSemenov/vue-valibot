@@ -7,28 +7,33 @@ import {
 	safeParseAsync,
 } from "valibot"
 
-export interface FormComposable<Result> {
+export interface FormComposable<Args extends any[], Result> {
 	form: Ref<HTMLFormElement>
-	submit: () => Promise<Result | undefined>
+	submit: (...args: Args) => Promise<Result | undefined>
 	submitting: Ref<boolean>
 	errors: Ref<FlatErrors>
 }
 
-export function useForm<Input, Result>(options: {
+export function useForm<Input, Args extends any[], Result>(options: {
 	fields?: Input | Ref<Input | undefined>
 	schema?: never
-	submit?: (data: Input) => Result | PromiseLike<Result>
-}): FormComposable<Result>
+	submit?: (data: Input, ...args: Args) => Result | PromiseLike<Result>
+}): FormComposable<Args, Result>
 
-export function useForm<Input, ValidInput, Result>(options: {
+export function useForm<
+	Input,
+	ValidInput,
+	Args extends any[],
+	Result,
+>(options: {
 	fields?: Input | Ref<Input | undefined>
 	schema?: BaseSchema<Input, ValidInput> | BaseSchemaAsync<Input, ValidInput>
-	submit?: (data: ValidInput) => Result | PromiseLike<Result>
-}): FormComposable<Result>
+	submit?: (data: ValidInput, ...args: Args) => Result | PromiseLike<Result>
+}): FormComposable<Args, Result>
 
-export function useForm<Result>(
-	submit?: () => Result | PromiseLike<Result>,
-): FormComposable<Result>
+export function useForm<Args extends any[], Result>(
+	submit?: (...args: Args) => Result | PromiseLike<Result>,
+): FormComposable<Args, Result>
 
 /**
  * @example
@@ -52,21 +57,24 @@ export function useForm<Result>(
  *   <button type="submit" :disabled="submitting">Submit</button>
  * </form>
  */
-export function useForm<Input, ValidInput, Result>(
+export function useForm<Input, ValidInput, Args extends any[], Result>(
 	optionsOrSubmit?:
 		| {
 				fields?: Input | Ref<Input | undefined>
 				schema?:
 					| BaseSchema<Input, ValidInput>
 					| BaseSchemaAsync<Input, ValidInput>
-				submit?: (data: ValidInput) => Result | PromiseLike<Result>
+				submit?: (
+					data: ValidInput,
+					...args: Args
+				) => Result | PromiseLike<Result>
 		  }
-		| (() => Result | PromiseLike<Result>),
+		| ((...args: Args) => Result | PromiseLike<Result>),
 ) {
 	const options =
-		typeof optionsOrSubmit === "function"
-			? { submit: optionsOrSubmit }
-			: optionsOrSubmit ?? {}
+		(typeof optionsOrSubmit === "function" ? undefined : optionsOrSubmit) ?? {}
+	const directSubmit =
+		typeof optionsOrSubmit === "function" ? optionsOrSubmit : undefined
 	const { schema } = options
 	const form = ref<HTMLFormElement>()
 	// TODO: type using FlatErrors<S> from the schema
@@ -74,7 +82,7 @@ export function useForm<Input, ValidInput, Result>(
 	const errors = ref<FlatErrors>()
 	const submitting = ref(false)
 
-	async function submit() {
+	async function submit(...args: Args) {
 		if (submitting.value) {
 			return
 		}
@@ -93,9 +101,12 @@ export function useForm<Input, ValidInput, Result>(
 				errors.value = flatten(res.issues)
 				return
 			}
-			return await options.submit?.(
-				res ? res.output : (input as unknown as ValidInput),
-			)
+			return await (directSubmit
+				? directSubmit(...args)
+				: options.submit?.(
+						res ? res.output : (input as unknown as ValidInput),
+						...args,
+				  ))
 		} finally {
 			submitting.value = false
 		}
