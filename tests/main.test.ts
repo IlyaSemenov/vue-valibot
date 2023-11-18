@@ -3,6 +3,25 @@ import * as v from "valibot"
 import { expect, test } from "vitest"
 import { useForm } from "vue-valibot-form"
 
+test("plain", async () => {
+	const fields = { foo: "" }
+	const { submit, errors } = useForm({
+		fields,
+		schema: v.object({
+			foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
+		}),
+		async submit(input) {
+			return { input }
+		},
+	})
+	expect(await submit()).toBeUndefined()
+	expect(errors.value).toStrictEqual({ nested: { foo: ["Please enter foo."] } })
+
+	fields.foo = " test"
+	expect(await submit()).toStrictEqual({ input: { foo: "test" } })
+	expect(errors.value).toBeUndefined()
+})
+
 test("reactive", async () => {
 	const fields = reactive({ foo: "" })
 	const { submit, errors } = useForm({
@@ -16,6 +35,7 @@ test("reactive", async () => {
 	})
 	expect(await submit()).toBeUndefined()
 	expect(errors.value).toStrictEqual({ nested: { foo: ["Please enter foo."] } })
+
 	fields.foo = " test"
 	expect(await submit()).toStrictEqual({ input: { foo: "test" } })
 	expect(errors.value).toBeUndefined()
@@ -34,9 +54,11 @@ test("ref", async () => {
 	})
 	expect(await submit()).toBeUndefined()
 	expect(errors.value).toStrictEqual({ nested: { foo: ["Please enter foo."] } })
+
 	fields.value.foo = " test1"
 	expect(await submit()).toStrictEqual({ input: { foo: "test1" } })
 	expect(errors.value).toBeUndefined()
+
 	fields.value = { foo: "test2 " }
 	expect(await submit()).toStrictEqual({ input: { foo: "test2" } })
 	expect(errors.value).toBeUndefined()
@@ -64,6 +86,7 @@ test("no submit", async () => {
 	})
 	expect(await submit()).toBeUndefined()
 	expect(errors.value).toStrictEqual({ nested: { foo: ["Please enter foo."] } })
+
 	fields.foo = " test"
 	expect(await submit()).toBeUndefined()
 	expect(errors.value).toBeUndefined()
@@ -83,5 +106,3 @@ test("submit shortcut", async () => {
 	const { submit } = useForm(() => 123)
 	expect(await submit()).toBe(123)
 })
-
-// TODO: test submitting ref
