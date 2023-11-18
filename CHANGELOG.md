@@ -1,5 +1,11 @@
 # vue-valibot-form
 
+## 1.2.0
+
+### Minor Changes
+
+- bbb95ee: Pass submit arguments to submit callback.
+
 ## 1.1.0
 
 ### Minor Changes
