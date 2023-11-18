@@ -8,10 +8,10 @@ import {
 } from "valibot"
 
 export interface FormComposable<Args extends any[], Result> {
-	form: Ref<HTMLFormElement>
+	form: Ref<HTMLFormElement | undefined>
 	submit: (...args: Args) => Promise<Result | undefined>
 	submitting: Ref<boolean>
-	errors: Ref<FlatErrors>
+	errors: Ref<FlatErrors | undefined>
 }
 
 export function useForm<Input, Args extends any[], Result>(options: {
@@ -70,7 +70,7 @@ export function useForm<Input, ValidInput, Args extends any[], Result>(
 				) => Result | PromiseLike<Result>
 		  }
 		| ((...args: Args) => Result | PromiseLike<Result>),
-) {
+): FormComposable<Args, Result> {
 	const options =
 		(typeof optionsOrSubmit === "function" ? undefined : optionsOrSubmit) ?? {}
 	const directSubmit =
