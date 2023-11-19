@@ -59,7 +59,7 @@ const { form, submit, submitting, errors } = useForm({
 All the parameters are optional:
 
 - `fields` is optional
-- `schema` is optional (if there no schema, `fields` will be passed as-is)
+- `schema` is optional (if there is no schema, `fields` will be passed as is)
 - `submit` is optional
 - `ref="form"` is optional (setting it will call HTML5 validation on the form before submit).
 
