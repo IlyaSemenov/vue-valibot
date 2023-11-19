@@ -59,7 +59,7 @@ const { form, submit, submitting, errors } = useForm({
 All the parameters are optional:
 
 - `fields` is optional
-- `schema` is optional (if there is no schema, `fields` will be passed as is)
+- `schema` is optional (if there is no schema, `fields` will be passed to `submit` as is)
 - `submit` is optional
 - `ref="form"` is optional (setting it will call HTML5 validation on the form before submit).
 
@@ -97,11 +97,7 @@ const { submit, submitting } = useForm({
   fields,
   schema,
   async submit(input, chargeImmediately = false) {
-    const res = await api.post({ ...input, chargeImmediately })
-    if (!res) {
-      // errors is valibot's FlatErrors.
-      errors.value = { root: ["Failed to submit."], nested: {} }
-    }
+    await api.post({ ...input, chargeImmediately })
   },
 })
 ```
