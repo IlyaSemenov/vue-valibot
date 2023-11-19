@@ -1,5 +1,11 @@
 # vue-valibot-form
 
+## 1.2.1
+
+### Patch Changes
+
+- 57d54cb: Fix types for form and errors to allow undefined.
+
 ## 1.2.0
 
 ### Minor Changes
