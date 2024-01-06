@@ -1,5 +1,11 @@
 # vue-valibot-form
 
+## 1.3.0
+
+### Minor Changes
+
+- cb8a455: Add `submitted` to the composable return.
+
 ## 1.2.1
 
 ### Patch Changes
