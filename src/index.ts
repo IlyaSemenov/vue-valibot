@@ -8,19 +8,72 @@ import {
 } from "valibot"
 
 export interface FormComposable<Args extends any[], Result> {
+	/**
+	 * The form element reference.
+	 *
+	 * Providing it to <form ref="form"> will call HTML5 validation on submit.
+	 */
 	form: Ref<HTMLFormElement | undefined>
+	/**
+	 * Submit form:
+	 *
+	 * - run HTML5 validation (if the reference it set)
+	 * - run valibot validation (if the schema is provided)
+	 * - call submit callback (if provided)
+	 *
+	 * Arguments passed to this submit function will be passed to the submit callback,
+	 * prepended with (possibly validated) form input (unless using the shortcut variant of useForm).
+	 *
+	 * During execution, `submitting` is true.
+	 *
+	 * After successfull execution, `submitted` is true.
+	 */
 	submit: (...args: Args) => Promise<Result | undefined>
+	/**
+	 * Is the form submit callback executing at the moment?
+	 *
+	 * Use this to disable submit button.
+	 */
 	submitting: Ref<boolean>
+	/**
+	 * Has the form been successfully submitted?
+	 *
+	 * Use this to disable submit button during success redirects or similar post-submit events.
+	 *
+	 * Feel free to reset. `useForm` doesn't depend on this value.
+	 */
 	submitted: Ref<boolean>
+	/**
+	 * Validation errors, as returned by valibot.
+	 *
+	 * Set it in the submit callback to report submit errors.
+	 */
 	errors: Ref<FlatErrors | undefined>
 }
 
+/**
+ * Vue3 composable for handling form submit.
+ */
 export function useForm<Input, Args extends any[], Result>(options: {
 	fields?: Input | Ref<Input | undefined>
 	schema?: never
+	/**
+	 * Form submit callback.
+	 * The first argument is `fields`, the rest arguments (if any) are the submit function arguments.
+	 *
+	 * Called only if the validation succeeds.
+	 *
+	 * During execution, `submitting` is true.
+	 * After successfull execution, `submitted` is true.
+	 */
 	submit?: (data: Input, ...args: Args) => Result | PromiseLike<Result>
 }): FormComposable<Args, Result>
 
+/**
+ * Vue3 composable for handling form submit.
+ *
+ * Validates the input using valibot.
+ */
 export function useForm<
 	Input,
 	ValidInput,
@@ -29,35 +82,34 @@ export function useForm<
 >(options: {
 	fields?: Input | Ref<Input | undefined>
 	schema?: BaseSchema<Input, ValidInput> | BaseSchemaAsync<Input, ValidInput>
+	/**
+	 * Form submit callback.
+	 * The first argument is the validated input, the rest arguments (if any) are the submit function arguments.
+	 *
+	 * Called only if the validation succeeds.
+	 *
+	 * During execution, `submitting` is true.
+	 * After successfull execution, `submitted` is true.
+	 */
 	submit?: (data: ValidInput, ...args: Args) => Result | PromiseLike<Result>
 }): FormComposable<Args, Result>
 
+/**
+ * Vue3 composable for handling form submit.
+ */
 export function useForm<Args extends any[], Result>(
+	/**
+	 * Form submit callback.
+	 * The arguments (if any) are the submit function arguments.
+	 *
+	 * Called only if the validation succeeds.
+	 *
+	 * During execution, `submitting` is true.
+	 * After successfull execution, `submitted` is true.
+	 */
 	submit?: (...args: Args) => Result | PromiseLike<Result>,
 ): FormComposable<Args, Result>
 
-/**
- * @example
- *
- * const fields = reactive({
- *   foo: "",
- * })
- *
- * const { form, submit, submitting, errors } = useForm({
- *   fields,
- *   schema: v.object({
- *     foo: v.string([v.toTrimmed(), v.nonEmpty()]),
- *   }),
- *   async submit(input) {
- *     await api.post(input)
- *   }
- * })
- *
- * <form ref="form" \@submit.prevent="submit">
- *   <input v-model="fields.foo" />
- *   <button type="submit" :disabled="submitting">Submit</button>
- * </form>
- */
 export function useForm<Input, ValidInput, Args extends any[], Result>(
 	optionsOrSubmit?:
 		| {
