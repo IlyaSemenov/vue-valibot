@@ -24,7 +24,7 @@ const fields = reactive({
   foo: "",
 })
 
-const { form, submit, submitting, errors } = useForm({
+const { form, submit, submitting, submitted, errors } = useForm({
   fields,
   schema: v.object({
     foo: v.string([v.toTrimmed(), v.minLength(1)]),

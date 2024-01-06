@@ -106,3 +106,19 @@ test("submit shortcut", async () => {
 	const { submit } = useForm(() => 123)
 	expect(await submit()).toBe(123)
 })
+
+test("submitted", async () => {
+	const fields = { foo: "" }
+	const { submit, submitted } = useForm({
+		fields,
+		schema: v.object({
+			foo: v.string([v.minLength(1)]),
+		}),
+	})
+	await submit()
+	expect(submitted.value).toBe(false)
+
+	fields.foo = "test"
+	await submit()
+	expect(submitted.value).toBe(true)
+})

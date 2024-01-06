@@ -11,6 +11,7 @@ export interface FormComposable<Args extends any[], Result> {
 	form: Ref<HTMLFormElement | undefined>
 	submit: (...args: Args) => Promise<Result | undefined>
 	submitting: Ref<boolean>
+	submitted: Ref<boolean>
 	errors: Ref<FlatErrors | undefined>
 }
 
@@ -81,11 +82,13 @@ export function useForm<Input, ValidInput, Args extends any[], Result>(
 	// Please test carefully, as blindly using a schema generic was breaking type inference for submit(data: ValidInput)
 	const errors = ref<FlatErrors>()
 	const submitting = ref(false)
+	const submitted = ref(false)
 
 	async function submit(...args: Args) {
 		if (submitting.value) {
 			return
 		}
+		submitted.value = false
 		errors.value = undefined
 		if (form.value && !form.value.checkValidity()) {
 			form.value.reportValidity()
@@ -101,16 +104,18 @@ export function useForm<Input, ValidInput, Args extends any[], Result>(
 				errors.value = flatten(res.issues)
 				return
 			}
-			return await (directSubmit
+			const returnValue = await (directSubmit
 				? directSubmit(...args)
 				: options.submit?.(
 						res ? res.output : (input as unknown as ValidInput),
 						...args,
 				  ))
+			submitted.value = true
+			return returnValue
 		} finally {
 			submitting.value = false
 		}
 	}
 
-	return { form, submit, submitting, errors }
+	return { form, submit, submitting, submitted, errors }
 }
