@@ -93,7 +93,7 @@ const { submit, submitting } = useForm(async () => {
 Additional arguments passed to `submit` composable will be passed to the submit callback after `input`:
 
 ```ts
-const { submit, submitting } = useForm({
+const { submit } = useForm({
   fields,
   schema,
   async submit(input, chargeImmediately = false) {
@@ -107,8 +107,8 @@ and then:
 ```html
 <form ref="form" @submit.prevent="submit">
   <!-- Input fields omitted for brevity. -->
-  <button type="submit" :disabled="submitting">Submit</button>
-  <button type="button" :disabled="submitting" @click="submit(true)">
+  <button type="submit">Submit</button>
+  <button type="button" @click="submit(true)">
     Submit and Charge Immediately
   </button>
 </form>
