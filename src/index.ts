@@ -55,7 +55,9 @@ export interface FormComposable<Args extends any[], Result> {
  * Loosely typed form options for internal use.
  */
 interface FormOptions<Input, ValidInput, Args extends any[], Result> {
+	/** @deprecated Use `input`. */
 	fields?: Input | Ref<Input | undefined>
+	input?: Input | Ref<Input | undefined>
 	schema?: BaseSchema<Input, ValidInput> | BaseSchemaAsync<Input, ValidInput>
 	submit?: SubmitCallback<[unknown, ...Args], Result>
 }
@@ -147,7 +149,7 @@ export function useForm<Input, ValidInput, Args extends any[], Result>(
 		}
 		submitting.value = true
 		try {
-			const input = toValue(options.fields)
+			const input = toValue(options.input ?? options.fields)
 			const res = schema ? await safeParseAsync(schema, input) : undefined
 			if (res && !res.success) {
 				errors.value = flatten(res.issues)
@@ -155,7 +157,7 @@ export function useForm<Input, ValidInput, Args extends any[], Result>(
 			}
 			const returnValue = await (directSubmit
 				? directSubmit(...args)
-				: options.submit?.(res ? res.output : (input as unknown), ...args))
+				: options.submit?.(res ? res.output : input, ...args))
 			submitted.value = true
 			return returnValue
 		} finally {

@@ -19,13 +19,13 @@ npm install vue-valibot-form
 import * as v from "valibot"
 import { useForm } from "vue-valibot-form"
 
-// Store data as you prefer, such as with Vue reactive or ref.
-const fields = reactive({
+// Store input data as you prefer, such as with Vue reactive or ref.
+const data = reactive({
   foo: "",
 })
 
 const { form, submit, submitting, errors } = useForm({
-  fields,
+  input: data,
   schema: v.object({
     foo: v.string([v.toTrimmed(), v.minLength(1)]),
   }),
@@ -42,8 +42,8 @@ const { form, submit, submitting, errors } = useForm({
 
 <template>
   <form ref="form" @submit.prevent="submit">
-    <!-- No fancy syntax for fields, just use what you prefer. -->
-    <input v-model="fields.foo" />
+    <!-- No fancy syntax for input fields, just use what you prefer. -->
+    <input v-model="data.foo" />
 
     <!-- Field errors. -->
     <div v-for="error in errors?.nested.foo">{{ error }}</div>
@@ -60,13 +60,13 @@ const { form, submit, submitting, errors } = useForm({
 
 ```ts
 useForm({
-  fields,
+  input,
   schema,
   submit,
 })
 ```
 
-- `fields`: (optional) a object (or object ref) to be validated and/or passed to `submit`.
+- `input`: (optional) input value (or ref) to be validated and/or passed to `submit`.
 - `schema`: (optional) a Valibot schema.
 - `submit`: (optional) submit handler.
 
@@ -87,7 +87,7 @@ const {
   submit,
   submitting,
   submitted,
-  errors
+  errors,
 } = useForm(...)
 ```
 
@@ -103,7 +103,7 @@ Additional arguments passed to `submit` composable will be passed to the submit 
 
 ```ts
 const { submit } = useForm({
-  fields,
+  input,
   schema,
   async submit(input, chargeImmediately = false) {
     await api.post({ ...input, chargeImmediately })

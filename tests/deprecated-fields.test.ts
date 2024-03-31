@@ -1,12 +1,15 @@
+// Copy of submit.test.ts as of fields -> input refactoring.
+// Delete with next major release.
+
 import { reactive, ref } from "@vue/reactivity"
 import * as v from "valibot"
 import { expect, test } from "vitest"
 import { useForm } from "vue-valibot-form"
 
 test("plain", async () => {
-	const input = { foo: "" }
+	const fields = { foo: "" }
 	const { submit, errors } = useForm({
-		input,
+		fields,
 		schema: v.object({
 			foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
 		}),
@@ -17,15 +20,15 @@ test("plain", async () => {
 	expect(await submit()).toBeUndefined()
 	expect(errors.value).toStrictEqual({ nested: { foo: ["Please enter foo."] } })
 
-	input.foo = " test"
+	fields.foo = " test"
 	expect(await submit()).toStrictEqual({ input: { foo: "test" } })
 	expect(errors.value).toBeUndefined()
 })
 
 test("reactive", async () => {
-	const input = reactive({ foo: "" })
+	const fields = reactive({ foo: "" })
 	const { submit, errors } = useForm({
-		input,
+		fields,
 		schema: v.object({
 			foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
 		}),
@@ -36,15 +39,15 @@ test("reactive", async () => {
 	expect(await submit()).toBeUndefined()
 	expect(errors.value).toStrictEqual({ nested: { foo: ["Please enter foo."] } })
 
-	input.foo = " test"
+	fields.foo = " test"
 	expect(await submit()).toStrictEqual({ input: { foo: "test" } })
 	expect(errors.value).toBeUndefined()
 })
 
 test("ref", async () => {
-	const input = ref({ foo: "" })
+	const fields = ref({ foo: "" })
 	const { submit, errors } = useForm({
-		input,
+		fields,
 		schema: v.object({
 			foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
 		}),
@@ -55,19 +58,19 @@ test("ref", async () => {
 	expect(await submit()).toBeUndefined()
 	expect(errors.value).toStrictEqual({ nested: { foo: ["Please enter foo."] } })
 
-	input.value.foo = " test1"
+	fields.value.foo = " test1"
 	expect(await submit()).toStrictEqual({ input: { foo: "test1" } })
 	expect(errors.value).toBeUndefined()
 
-	input.value = { foo: "test2 " }
+	fields.value = { foo: "test2 " }
 	expect(await submit()).toStrictEqual({ input: { foo: "test2" } })
 	expect(errors.value).toBeUndefined()
 })
 
 test("no schema", async () => {
-	const input = reactive({ foo: "" })
+	const fields = reactive({ foo: "" })
 	const { submit, errors } = useForm({
-		input,
+		fields,
 		async submit(input) {
 			return { input }
 		},
@@ -77,9 +80,9 @@ test("no schema", async () => {
 })
 
 test("no submit", async () => {
-	const input = reactive({ foo: "" })
+	const fields = reactive({ foo: "" })
 	const { submit, errors } = useForm({
-		input,
+		fields,
 		schema: v.object({
 			foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
 		}),
@@ -87,7 +90,7 @@ test("no submit", async () => {
 	expect(await submit()).toBeUndefined()
 	expect(errors.value).toStrictEqual({ nested: { foo: ["Please enter foo."] } })
 
-	input.foo = " test"
+	fields.foo = " test"
 	expect(await submit()).toBeUndefined()
 	expect(errors.value).toBeUndefined()
 })
@@ -108,9 +111,9 @@ test("submit shortcut", async () => {
 })
 
 test("submitted", async () => {
-	const input = { foo: "" }
+	const fields = { foo: "" }
 	const { submit, submitted } = useForm({
-		input,
+		fields,
 		schema: v.object({
 			foo: v.string([v.minLength(1)]),
 		}),
@@ -118,7 +121,7 @@ test("submitted", async () => {
 	await submit()
 	expect(submitted.value).toBe(false)
 
-	input.foo = "test"
+	fields.foo = "test"
 	await submit()
 	expect(submitted.value).toBe(true)
 })

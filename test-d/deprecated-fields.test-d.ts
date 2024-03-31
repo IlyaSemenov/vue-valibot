@@ -1,3 +1,6 @@
+// Copy of submit.test-d.ts as of fields -> input refactoring.
+// Delete with next major release.
+
 import { ref } from "@vue/reactivity"
 import { expectType } from "tsd"
 import * as v from "valibot"
@@ -5,7 +8,7 @@ import { useForm } from "vue-valibot-form"
 
 // Test that input is validated
 useForm({
-	input: { foo: "" as string | undefined },
+	fields: { foo: "" as string | undefined },
 	schema: v.object({
 		foo: v.string(),
 	}),
@@ -16,7 +19,7 @@ useForm({
 
 // Test that input ref is validated
 useForm({
-	input: ref({ foo: "" as string | undefined }),
+	fields: ref({ foo: "" as string | undefined }),
 	schema: v.object({
 		foo: v.string(),
 	}),
@@ -25,9 +28,9 @@ useForm({
 	},
 })
 
-// Test that input type is the input type
+// Test that input type is the fields type
 useForm({
-	input: { foo: "" as string | undefined },
+	fields: { foo: "" as string | undefined },
 	async submit(input) {
 		expectType<{ foo: string | undefined }>(input)
 	},
@@ -35,7 +38,7 @@ useForm({
 
 // Test that input type is unref in submit handler
 useForm({
-	input: ref({ foo: "" as string | undefined }),
+	fields: ref({ foo: "" as string | undefined }),
 	async submit(input) {
 		expectType<{ foo: string | undefined }>(input)
 	},
@@ -43,7 +46,7 @@ useForm({
 
 // Test that schema can be undefined and the input type is still valid
 useForm({
-	input: { foo: "" as string | undefined },
+	fields: { foo: "" as string | undefined },
 	schema: undefined,
 	async submit(input) {
 		expectType<{ foo: string | undefined }>(input)
@@ -64,7 +67,7 @@ useForm(() => {
 
 // Test that there can be no submit handler
 useForm({
-	input: ref({ foo: "" as string | undefined }),
+	fields: ref({ foo: "" as string | undefined }),
 	schema: v.object({
 		foo: v.string(),
 	}),
