@@ -1,5 +1,11 @@
 # vue-valibot-form
 
+## 1.4.1
+
+### Patch Changes
+
+- 6636705: Lax valibot dependency semver.
+
 ## 1.4.0
 
 ### Minor Changes
