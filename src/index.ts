@@ -1,4 +1,4 @@
-import { isRef, Ref, ref } from "@vue/reactivity"
+import { Ref, ref, toValue } from "@vue/reactivity"
 import {
 	BaseSchema,
 	BaseSchemaAsync,
@@ -148,9 +148,7 @@ export function useForm<Input, ValidInput, Args extends any[], Result>(
 		}
 		submitting.value = true
 		try {
-			const input = isRef(options.fields)
-				? options.fields.value
-				: options.fields
+			const input = toValue(options.fields)
 			const res = schema ? await safeParseAsync(schema, input) : undefined
 			if (res && !res.success) {
 				errors.value = flatten(res.issues)
