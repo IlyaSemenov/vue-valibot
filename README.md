@@ -24,7 +24,7 @@ const fields = reactive({
   foo: "",
 })
 
-const { form, submit, submitting, submitted, errors } = useForm({
+const { form, submit, submitting, errors } = useForm({
   fields,
   schema: v.object({
     foo: v.string([v.toTrimmed(), v.minLength(1)]),
@@ -33,7 +33,7 @@ const { form, submit, submitting, submitted, errors } = useForm({
     // Input is validated against the schema and typed accordingly.
     const res = await api.post(input)
     if (!res) {
-      // errors is valibot's FlatErrors.
+      // errors is valibot.FlatErrors
       errors.value = { root: ["Failed to submit."], nested: {} }
     }
   },
@@ -56,30 +56,21 @@ const { form, submit, submitting, submitted, errors } = useForm({
 </template>
 ```
 
-All the parameters are optional:
-
-- `fields` is optional
-- `schema` is optional (if there is no schema, `fields` will be passed to `submit` as is)
-- `submit` is optional
-- `ref="form"` is optional (setting it will call HTML5 validation on the form before submit).
-
-For example, the minimal use, just for the sake of `submitting`:
+## API: options
 
 ```ts
-import { useForm } from "vue-valibot-form"
-
-const { submit, submitting } = useForm({
-  async submit() {
-    // submitting is true during this callback.
-    await api.post()
-  },
+useForm({
+  fields,
+  schema,
+  submit,
 })
-
-// Call submit from somewhere else.
-await submit()
 ```
 
-For that particular use, there is a shortcut:
+- `fields`: (optional) a object (or object ref) to be validated and/or passed to `submit`.
+- `schema`: (optional) a Valibot schema.
+- `submit`: (optional) submit handler.
+
+All the parameters are optional. If the only parameter you need is `submit`, there is a shortcut version:
 
 ```ts
 const { submit, submitting } = useForm(async () => {
@@ -87,6 +78,24 @@ const { submit, submitting } = useForm(async () => {
   await api.post()
 })
 ```
+
+## API: return object
+
+```ts
+const {
+  form,
+  submit,
+  submitting,
+  submitted,
+  errors
+} = useForm(...)
+```
+
+- `form`: a `Ref<HTMLFormElement>`. If set with `<form ref="form">`, HTML5 validation will be triggered on the form before `submit`.
+- `submit`: a submit handle that should be called by user action (e.g. with `<form @submit.prevent="submit">` or with `<button @click="submit">`)
+- `submitting`: a `Ref<boolean>`, which is `true` while the form is being submitted.
+- `submitted`: a `Ref<boolean>`, which is `true` after the form has been successfully submitted.
+- `errors`: a `Ref<valibot.FlatErrors | undefined>`, the flat list of errors as returned by Valibot (or set manually).
 
 ## Submit with arguments
 
