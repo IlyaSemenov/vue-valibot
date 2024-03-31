@@ -60,7 +60,7 @@ interface FormOptions<Input, ValidInput, Args extends any[], Result> {
 	input?: Input | Ref<Input | undefined>
 	schema?: BaseSchema<Input, ValidInput> | BaseSchemaAsync<Input, ValidInput>
 	submit?: SubmitCallback<[unknown, ...Args], Result>
-	onError?: (errors: FlatErrors) => any
+	onErrors?: (errors: FlatErrors) => any
 }
 
 type SubmitCallback<Args extends any[], Result> = (
@@ -154,11 +154,14 @@ export function useForm<Input, ValidInput, Args extends any[], Result>(
 			const res = schema ? await safeParseAsync(schema, input) : undefined
 			if (res && !res.success) {
 				errors.value = flatten(res.issues)
+				await options.onErrors?.(errors.value)
 			} else {
 				const returnValue = await (directSubmit
 					? directSubmit(...args)
 					: options.submit?.(res ? res.output : input, ...args))
-				if (!errors.value) {
+				if (errors.value) {
+					await options.onErrors?.(errors.value)
+				} else {
 					submitted.value = true
 				}
 				return returnValue

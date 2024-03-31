@@ -63,12 +63,14 @@ useForm({
   input,
   schema,
   submit,
+  onErrors,
 })
 ```
 
 - `input`: (optional) input value (or ref) to be validated and/or passed to `submit`.
-- `schema`: (optional) a Valibot schema.
+- `schema`: (optional) Valibot schema.
 - `submit`: (optional) submit handler.
+- `onErrors`: (optional) error handler, called (and awaited) if the validation fails, or if `errors` were set by the submit handler.
 
 All the parameters are optional. If the only parameter you need is `submit`, there is a shortcut version:
 
