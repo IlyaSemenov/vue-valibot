@@ -52,47 +52,57 @@ export interface FormComposable<Args extends any[], Result> {
 }
 
 /**
+ * Loosely typed form options for internal use.
+ */
+interface FormOptions<Input, ValidInput, Args extends any[], Result> {
+	fields?: Input | Ref<Input | undefined>
+	schema?: BaseSchema<Input, ValidInput> | BaseSchemaAsync<Input, ValidInput>
+	submit?: SubmitCallback<[unknown, ...Args], Result>
+}
+
+type SubmitCallback<Args extends any[], Result> = (
+	...args: Args
+) => Result | PromiseLike<Result>
+
+/**
  * Vue3 composable for handling form submit.
  */
-export function useForm<Input, Args extends any[], Result>(options: {
-	fields?: Input | Ref<Input | undefined>
-	schema?: never
-	/**
-	 * Form submit callback.
-	 * The first argument is `fields`, the rest arguments (if any) are the submit function arguments.
-	 *
-	 * Called only if the validation succeeds.
-	 *
-	 * During execution, `submitting` is true.
-	 * After successfull execution, `submitted` is true.
-	 */
-	submit?: (data: Input, ...args: Args) => Result | PromiseLike<Result>
-}): FormComposable<Args, Result>
+export function useForm<Input, Args extends any[], Result>(
+	options: Omit<
+		FormOptions<Input, Input, Args, Result>,
+		"schema" | "submit"
+	> & {
+		schema?: never
+		/**
+		 * Form submit callback.
+		 * The first argument is `fields`, the rest arguments (if any) are the submit function arguments.
+		 *
+		 * During execution, `submitting` is true.
+		 * After successfull execution, `submitted` is true.
+		 */
+		submit?: SubmitCallback<[Input, ...Args], Result>
+	},
+): FormComposable<Args, Result>
 
 /**
  * Vue3 composable for handling form submit.
  *
  * Validates the input using valibot.
  */
-export function useForm<
-	Input,
-	ValidInput,
-	Args extends any[],
-	Result,
->(options: {
-	fields?: Input | Ref<Input | undefined>
-	schema?: BaseSchema<Input, ValidInput> | BaseSchemaAsync<Input, ValidInput>
-	/**
-	 * Form submit callback.
-	 * The first argument is the validated input, the rest arguments (if any) are the submit function arguments.
-	 *
-	 * Called only if the validation succeeds.
-	 *
-	 * During execution, `submitting` is true.
-	 * After successfull execution, `submitted` is true.
-	 */
-	submit?: (data: ValidInput, ...args: Args) => Result | PromiseLike<Result>
-}): FormComposable<Args, Result>
+export function useForm<Input, ValidInput, Args extends any[], Result>(
+	options: Omit<FormOptions<Input, ValidInput, Args, Result>, "submit"> & {
+		/**
+		 * Form submit callback.
+		 * The first argument is the validated input, the rest arguments (if any) are the submit function arguments.
+		 *
+		 * Called only if the validation succeeds.
+		 *
+		 * During execution, `submitting` is true.
+		 * After successfull execution, `submitted` is true.
+		 */
+		submit?: SubmitCallback<[ValidInput, ...Args], Result>
+	},
+): FormComposable<Args, Result>
 
 /**
  * Vue3 composable for handling form submit.
@@ -102,27 +112,16 @@ export function useForm<Args extends any[], Result>(
 	 * Form submit callback.
 	 * The arguments (if any) are the submit function arguments.
 	 *
-	 * Called only if the validation succeeds.
-	 *
 	 * During execution, `submitting` is true.
 	 * After successfull execution, `submitted` is true.
 	 */
-	submit?: (...args: Args) => Result | PromiseLike<Result>,
+	submit?: SubmitCallback<Args, Result>,
 ): FormComposable<Args, Result>
 
 export function useForm<Input, ValidInput, Args extends any[], Result>(
 	optionsOrSubmit?:
-		| {
-				fields?: Input | Ref<Input | undefined>
-				schema?:
-					| BaseSchema<Input, ValidInput>
-					| BaseSchemaAsync<Input, ValidInput>
-				submit?: (
-					data: ValidInput,
-					...args: Args
-				) => Result | PromiseLike<Result>
-		  }
-		| ((...args: Args) => Result | PromiseLike<Result>),
+		| FormOptions<Input, ValidInput, Args, Result>
+		| SubmitCallback<Args, Result>,
 ): FormComposable<Args, Result> {
 	const options =
 		(typeof optionsOrSubmit === "function" ? undefined : optionsOrSubmit) ?? {}
@@ -156,10 +155,7 @@ export function useForm<Input, ValidInput, Args extends any[], Result>(
 			}
 			const returnValue = await (directSubmit
 				? directSubmit(...args)
-				: options.submit?.(
-						res ? res.output : (input as unknown as ValidInput),
-						...args,
-				  ))
+				: options.submit?.(res ? res.output : (input as unknown), ...args))
 			submitted.value = true
 			return returnValue
 		} finally {
