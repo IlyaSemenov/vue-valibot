@@ -122,3 +122,29 @@ test("submitted", async () => {
 	await submit()
 	expect(submitted.value).toBe(true)
 })
+
+test("manually set errors", async () => {
+	const input = ref("")
+	const { submit, submitted, errors } = useForm({
+		input,
+		schema: v.string(),
+		submit(input) {
+			if (!input) {
+				errors.value = { root: ["Input required."], nested: {} }
+			}
+		},
+	})
+	await submit()
+	expect(errors.value).toMatchObject({ root: ["Input required."] })
+	expect(submitted.value).toBe(false)
+
+	input.value = "test"
+	await submit()
+	expect(errors.value).toBeUndefined()
+	expect(submitted.value).toBe(true)
+
+	input.value = ""
+	await submit()
+	expect(errors.value).toMatchObject({ root: ["Input required."] })
+	expect(submitted.value).toBe(false)
+})
