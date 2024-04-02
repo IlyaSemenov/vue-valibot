@@ -33,7 +33,7 @@ const { form, submit, submitting, errors } = useForm({
     // Input is validated against the schema and typed accordingly.
     const res = await api.post(input)
     if (!res) {
-      // errors is valibot.FlatErrors
+      // errors is Ref<valibot.FlatErrors>
       errors.value = { root: ["Failed to submit."], nested: {} }
     }
   },
@@ -138,4 +138,30 @@ const { submit, submitting } = useForm(
 // Arguments are type checked:
 submit(10, "foo")
 submit(20, "bar", true)
+```
+
+## SubmitError
+
+If you throw `SubmitError` from the submit handler, it will be intercepted and its argument will be put into `errors.value`.
+
+This could be useful together with `onError`:
+
+```ts
+import { useForm, SubmitError } from "vue-valibot-form"
+
+// Note: no need to expose { errors } on the script level.
+const { submit } = useForm({
+  input,
+  schema,
+  submit(input) {
+    if (!validateInput(input)) {
+      throw new SubmitError({ root: ["Input is invalid."], nested: {} })
+    }
+  },
+  onErrors(errors) {
+    // errors is valibot.FlatErrors (coming either from validation or from submit handler)
+    // TODO: show some alert box.
+    console.error(errors)
+  },
+})
 ```

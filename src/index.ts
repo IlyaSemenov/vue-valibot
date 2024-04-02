@@ -156,9 +156,19 @@ export function useForm<Input, ValidInput, Args extends any[], Result>(
 				errors.value = flatten(res.issues)
 				await options.onErrors?.(errors.value)
 			} else {
-				const returnValue = await (directSubmit
-					? directSubmit(...args)
-					: options.submit?.(res ? res.output : input, ...args))
+				const returnValue = await Promise.resolve()
+					.then(() =>
+						directSubmit
+							? directSubmit(...args)
+							: options.submit?.(res ? res.output : input, ...args),
+					)
+					.catch((err) => {
+						if (err instanceof SubmitError) {
+							errors.value = err.errors
+							return undefined
+						}
+						throw err
+					})
 				if (errors.value) {
 					await options.onErrors?.(errors.value)
 				} else {
@@ -172,4 +182,10 @@ export function useForm<Input, ValidInput, Args extends any[], Result>(
 	}
 
 	return { form, submit, submitting, submitted, errors }
+}
+
+export class SubmitError extends Error {
+	constructor(public errors: FlatErrors) {
+		super("Error submitting form.")
+	}
 }
