@@ -69,7 +69,7 @@ export function useForm<Input, Args extends any[], Result>(
 		schema?: never
 		/**
 		 * Form submit callback.
-		 * The first argument is `fields`, the rest arguments (if any) are the submit function arguments.
+		 * The first argument is `input`, the rest arguments (if any) are the submit function arguments.
 		 *
 		 * During execution, `submitting` is true.
 		 * After successfull execution, `submitted` is true.
@@ -89,10 +89,9 @@ export function useForm<Input, Args extends any[], Result>(
 		fields?: unknown
 		schema?: BaseSchema<unknown, Input> | BaseSchemaAsync<unknown, Input>
 		/**
-		 * Form submit callback.
-		 * The first argument is the validated input, the rest arguments (if any) are the submit function arguments.
+		 * Form submit callback. Called only if the validation succeeds.
 		 *
-		 * Called only if the validation succeeds.
+		 * The first argument is the validated input, the rest arguments (if any) are the submit function arguments.
 		 *
 		 * During execution, `submitting` is true.
 		 * After successfull execution, `submitted` is true.
@@ -107,6 +106,7 @@ export function useForm<Input, Args extends any[], Result>(
 export function useForm<Args extends any[], Result>(
 	/**
 	 * Form submit callback.
+	 *
 	 * The arguments (if any) are the submit function arguments.
 	 *
 	 * During execution, `submitting` is true.
