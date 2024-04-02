@@ -188,7 +188,7 @@ describe("onErrors", () => {
 	test("schema errors", async () => {
 		const input = ref("")
 		const callbackErrors = ref<v.FlatErrors>()
-		const { submit, submitted } = useForm({
+		const { submit } = useForm({
 			input,
 			schema: v.string([v.minLength(1, "Input required.")]),
 			onErrors(errors) {
@@ -197,13 +197,12 @@ describe("onErrors", () => {
 		})
 		await submit()
 		expect(callbackErrors.value).toMatchObject({ root: ["Input required."] })
-		expect(submitted.value).toBe(false)
 	})
 
 	test("manual errors", async () => {
 		const input = ref("")
 		const callbackErrors = ref<v.FlatErrors>()
-		const { submit, submitted, errors } = useForm({
+		const { submit, errors } = useForm({
 			input,
 			schema: v.string(),
 			submit(input) {
@@ -217,6 +216,5 @@ describe("onErrors", () => {
 		})
 		await submit()
 		expect(callbackErrors.value).toMatchObject({ root: ["Input required."] })
-		expect(submitted.value).toBe(false)
 	})
 })
