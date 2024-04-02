@@ -81,3 +81,19 @@ expectType<() => Promise<number | undefined>>(submitNumber)
 // Test that shortcut submit callback return value type is passed
 const { submit: submitNumberShortcut } = useForm(() => 123)
 expectType<() => Promise<number | undefined>>(submitNumberShortcut)
+
+// Test that schema can be a partial lax-typed object
+useForm({
+	input: { foo: 0 as "" | number, bar: 0 as "" | number },
+	schema: v.object({
+		foo: v.number(),
+	}),
+})
+
+// Test that there is no type error without submit handler
+useForm({
+	input: { foo: "" as string | undefined },
+	schema: v.object({
+		foo: v.string(),
+	}),
+})

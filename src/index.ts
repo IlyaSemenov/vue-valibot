@@ -1,4 +1,4 @@
-import { Ref, ref, toValue } from "@vue/reactivity"
+import { MaybeRefOrGetter, Ref, ref, toValue } from "@vue/reactivity"
 import {
 	BaseSchema,
 	BaseSchemaAsync,
@@ -51,15 +51,7 @@ export interface FormComposable<Args extends any[], Result> {
 	errors: Ref<FlatErrors | undefined>
 }
 
-/**
- * Loosely typed form options for internal use.
- */
-interface FormOptions<Input, ValidInput, Args extends any[], Result> {
-	/** @deprecated Use `input`. */
-	fields?: Input | Ref<Input | undefined>
-	input?: Input | Ref<Input | undefined>
-	schema?: BaseSchema<Input, ValidInput> | BaseSchemaAsync<Input, ValidInput>
-	submit?: SubmitCallback<[unknown, ...Args], Result>
+interface BaseOptions {
 	onErrors?: (errors: FlatErrors) => any
 }
 
@@ -71,10 +63,9 @@ type SubmitCallback<Args extends any[], Result> = (
  * Vue3 composable for handling form submit.
  */
 export function useForm<Input, Args extends any[], Result>(
-	options: Omit<
-		FormOptions<Input, Input, Args, Result>,
-		"schema" | "submit"
-	> & {
+	options: BaseOptions & {
+		input?: MaybeRefOrGetter<Input>
+		fields?: MaybeRefOrGetter<Input>
 		schema?: never
 		/**
 		 * Form submit callback.
@@ -92,8 +83,11 @@ export function useForm<Input, Args extends any[], Result>(
  *
  * Validates the input using valibot.
  */
-export function useForm<Input, ValidInput, Args extends any[], Result>(
-	options: Omit<FormOptions<Input, ValidInput, Args, Result>, "submit"> & {
+export function useForm<Input, Args extends any[], Result>(
+	options: BaseOptions & {
+		input?: unknown
+		fields?: unknown
+		schema?: BaseSchema<unknown, Input> | BaseSchemaAsync<unknown, Input>
 		/**
 		 * Form submit callback.
 		 * The first argument is the validated input, the rest arguments (if any) are the submit function arguments.
@@ -103,7 +97,7 @@ export function useForm<Input, ValidInput, Args extends any[], Result>(
 		 * During execution, `submitting` is true.
 		 * After successfull execution, `submitted` is true.
 		 */
-		submit?: SubmitCallback<[ValidInput, ...Args], Result>
+		submit?: SubmitCallback<[Input, ...Args], Result>
 	},
 ): FormComposable<Args, Result>
 
@@ -121,9 +115,14 @@ export function useForm<Args extends any[], Result>(
 	submit?: SubmitCallback<Args, Result>,
 ): FormComposable<Args, Result>
 
-export function useForm<Input, ValidInput, Args extends any[], Result>(
+export function useForm<Input, Args extends any[], Result>(
 	optionsOrSubmit?:
-		| FormOptions<Input, ValidInput, Args, Result>
+		| (BaseOptions & {
+				input?: unknown
+				fields?: unknown
+				schema?: BaseSchema<unknown, Input> | BaseSchemaAsync<unknown, Input>
+				submit?: SubmitCallback<[unknown, ...Args], Result>
+		  })
 		| SubmitCallback<Args, Result>,
 ): FormComposable<Args, Result> {
 	const options =
