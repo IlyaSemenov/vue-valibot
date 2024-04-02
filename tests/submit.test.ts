@@ -3,65 +3,73 @@ import * as v from "valibot"
 import { describe, expect, test } from "vitest"
 import { useForm } from "vue-valibot-form"
 
-test("plain", async () => {
-	const input = { foo: "" }
-	const { submit, errors } = useForm({
-		input,
-		schema: v.object({
-			foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
-		}),
-		async submit(input) {
-			return { input }
-		},
+describe("input", () => {
+	test("plain", async () => {
+		const input = { foo: "" }
+		const { submit, errors } = useForm({
+			input,
+			schema: v.object({
+				foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
+			}),
+			async submit(input) {
+				return { input }
+			},
+		})
+		expect(await submit()).toBeUndefined()
+		expect(errors.value).toStrictEqual({
+			nested: { foo: ["Please enter foo."] },
+		})
+
+		input.foo = " test"
+		expect(await submit()).toStrictEqual({ input: { foo: "test" } })
+		expect(errors.value).toBeUndefined()
 	})
-	expect(await submit()).toBeUndefined()
-	expect(errors.value).toStrictEqual({ nested: { foo: ["Please enter foo."] } })
 
-	input.foo = " test"
-	expect(await submit()).toStrictEqual({ input: { foo: "test" } })
-	expect(errors.value).toBeUndefined()
-})
+	test("reactive", async () => {
+		const input = reactive({ foo: "" })
+		const { submit, errors } = useForm({
+			input,
+			schema: v.object({
+				foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
+			}),
+			async submit(input) {
+				return { input }
+			},
+		})
+		expect(await submit()).toBeUndefined()
+		expect(errors.value).toStrictEqual({
+			nested: { foo: ["Please enter foo."] },
+		})
 
-test("reactive", async () => {
-	const input = reactive({ foo: "" })
-	const { submit, errors } = useForm({
-		input,
-		schema: v.object({
-			foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
-		}),
-		async submit(input) {
-			return { input }
-		},
+		input.foo = " test"
+		expect(await submit()).toStrictEqual({ input: { foo: "test" } })
+		expect(errors.value).toBeUndefined()
 	})
-	expect(await submit()).toBeUndefined()
-	expect(errors.value).toStrictEqual({ nested: { foo: ["Please enter foo."] } })
 
-	input.foo = " test"
-	expect(await submit()).toStrictEqual({ input: { foo: "test" } })
-	expect(errors.value).toBeUndefined()
-})
+	test("ref", async () => {
+		const input = ref({ foo: "" })
+		const { submit, errors } = useForm({
+			input,
+			schema: v.object({
+				foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
+			}),
+			async submit(input) {
+				return { input }
+			},
+		})
+		expect(await submit()).toBeUndefined()
+		expect(errors.value).toStrictEqual({
+			nested: { foo: ["Please enter foo."] },
+		})
 
-test("ref", async () => {
-	const input = ref({ foo: "" })
-	const { submit, errors } = useForm({
-		input,
-		schema: v.object({
-			foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
-		}),
-		async submit(input) {
-			return { input }
-		},
+		input.value.foo = " test1"
+		expect(await submit()).toStrictEqual({ input: { foo: "test1" } })
+		expect(errors.value).toBeUndefined()
+
+		input.value = { foo: "test2 " }
+		expect(await submit()).toStrictEqual({ input: { foo: "test2" } })
+		expect(errors.value).toBeUndefined()
 	})
-	expect(await submit()).toBeUndefined()
-	expect(errors.value).toStrictEqual({ nested: { foo: ["Please enter foo."] } })
-
-	input.value.foo = " test1"
-	expect(await submit()).toStrictEqual({ input: { foo: "test1" } })
-	expect(errors.value).toBeUndefined()
-
-	input.value = { foo: "test2 " }
-	expect(await submit()).toStrictEqual({ input: { foo: "test2" } })
-	expect(errors.value).toBeUndefined()
 })
 
 test("no schema", async () => {
@@ -107,50 +115,52 @@ test("submit shortcut", async () => {
 	expect(await submit()).toBe(123)
 })
 
-test("submitted", async () => {
-	const input = { foo: "" }
-	const { submit, submitted } = useForm({
-		input,
-		schema: v.object({
-			foo: v.string([v.minLength(1)]),
-		}),
+describe("submitted", () => {
+	test("schema errors", async () => {
+		const input = { foo: "" }
+		const { submit, submitted } = useForm({
+			input,
+			schema: v.object({
+				foo: v.string([v.minLength(1)]),
+			}),
+		})
+		await submit()
+		expect(submitted.value).toBe(false)
+
+		input.foo = "test"
+		await submit()
+		expect(submitted.value).toBe(true)
 	})
-	await submit()
-	expect(submitted.value).toBe(false)
 
-	input.foo = "test"
-	await submit()
-	expect(submitted.value).toBe(true)
-})
+	test("manual errors", async () => {
+		const input = ref("")
+		const { submit, submitted, errors } = useForm({
+			input,
+			schema: v.string(),
+			submit(input) {
+				if (!input) {
+					errors.value = { root: ["Input required."], nested: {} }
+				}
+			},
+		})
+		await submit()
+		expect(errors.value).toMatchObject({ root: ["Input required."] })
+		expect(submitted.value).toBe(false)
 
-test("manually set errors", async () => {
-	const input = ref("")
-	const { submit, submitted, errors } = useForm({
-		input,
-		schema: v.string(),
-		submit(input) {
-			if (!input) {
-				errors.value = { root: ["Input required."], nested: {} }
-			}
-		},
+		input.value = "test"
+		await submit()
+		expect(errors.value).toBeUndefined()
+		expect(submitted.value).toBe(true)
+
+		input.value = ""
+		await submit()
+		expect(errors.value).toMatchObject({ root: ["Input required."] })
+		expect(submitted.value).toBe(false)
 	})
-	await submit()
-	expect(errors.value).toMatchObject({ root: ["Input required."] })
-	expect(submitted.value).toBe(false)
-
-	input.value = "test"
-	await submit()
-	expect(errors.value).toBeUndefined()
-	expect(submitted.value).toBe(true)
-
-	input.value = ""
-	await submit()
-	expect(errors.value).toMatchObject({ root: ["Input required."] })
-	expect(submitted.value).toBe(false)
 })
 
 describe("onErrors", () => {
-	test("validation", async () => {
+	test("schema errors", async () => {
 		const input = ref("")
 		const callbackErrors = ref<v.FlatErrors>()
 		const { submit, submitted } = useForm({
@@ -165,7 +175,7 @@ describe("onErrors", () => {
 		expect(submitted.value).toBe(false)
 	})
 
-	test("manual set", async () => {
+	test("manual errors", async () => {
 		const input = ref("")
 		const callbackErrors = ref<v.FlatErrors>()
 		const { submit, submitted, errors } = useForm({
