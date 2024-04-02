@@ -130,6 +130,10 @@ describe("submitted", () => {
 		input.foo = "test"
 		await submit()
 		expect(submitted.value).toBe(true)
+
+		input.foo = ""
+		await submit()
+		expect(submitted.value).toBe(false)
 	})
 
 	test("manual errors", async () => {
@@ -156,6 +160,27 @@ describe("submitted", () => {
 		await submit()
 		expect(errors.value).toMatchObject({ root: ["Input required."] })
 		expect(submitted.value).toBe(false)
+	})
+
+	test("exception", async () => {
+		const input = ref("")
+		const { submit, submitted, errors } = useForm({
+			input,
+			schema: v.string(),
+			submit(input) {
+				if (!input) {
+					throw new Error("Fail")
+				}
+			},
+		})
+		await expect(submit()).rejects.toThrow("Fail")
+		expect(errors.value).toBeUndefined()
+		expect(submitted.value).toBe(false)
+
+		input.value = "test"
+		await submit()
+		expect(errors.value).toBeUndefined()
+		expect(submitted.value).toBe(true)
 	})
 })
 
