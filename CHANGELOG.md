@@ -1,5 +1,15 @@
 # vue-valibot-form
 
+## 1.5.0
+
+### Minor Changes
+
+- 0d00742: Option to throw `SubmitError`.
+
+### Patch Changes
+
+- ffce1e4: Remove typecheck on input parameters with schema defined.
+
 ## 1.4.1
 
 ### Patch Changes
