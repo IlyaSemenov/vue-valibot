@@ -56,10 +56,20 @@ const { form, submit, submitting, errors } = useForm({
 </template>
 ```
 
-## API: options
+## API
+
+The package provides a single Vue3 composable:
 
 ```ts
-useForm({
+const {
+  // All return values are optional to use.
+  form,
+  submit,
+  submitting,
+  submitted,
+  errors,
+} = useForm({
+  // All options are optional to provide.
   input,
   schema,
   submit,
@@ -67,12 +77,40 @@ useForm({
 })
 ```
 
-- `input`: (optional) input value (or ref) to be validated and/or passed to `submit`.
-- `schema`: (optional) Valibot schema.
-- `submit`: (optional) submit handler.
-- `onErrors`: (optional) error handler, called (and awaited) if the validation fails, or if `errors` were set by the submit handler.
+## Composable options
 
-All the parameters are optional. If the only parameter you need is `submit`, there is a shortcut version:
+### `input`
+
+(Optional) Input value, or ref, or a getter, of the data to be validated and/or passed to `submit`.
+
+### `schema`
+
+(Optional) Valibot schema.
+
+### `submit`
+
+(Optional) Form submit callback.
+
+Only called if:
+
+- Form is not being submitted at the moment (`submitting.value` is falsy).
+- HTML5 validation passes (if enabled).
+- Valibot validation passes (if used).
+
+The first argument is the (possibly validated) input, the rest arguments are the submit function arguments.
+
+During execution, `submitting` is true.
+After successfull execution, `submitted` is true.
+
+### `onErrors`
+
+(Optional) Error callback.
+
+Called (and awaited) if the validation fails, or if `errors.value` was set by the submit handler.
+
+## Shortcut variant
+
+All the composable options are optional. If the only option you need is `submit`, there is a shortcut variant:
 
 ```ts
 const { submit, submitting } = useForm(async () => {
@@ -81,23 +119,54 @@ const { submit, submitting } = useForm(async () => {
 })
 ```
 
-## API: return object
+## Composable return values
 
-```ts
-const {
-  form,
-  submit,
-  submitting,
-  submitted,
-  errors,
-} = useForm(...)
-```
+### `form`
 
-- `form`: a `Ref<HTMLFormElement>`. If set with `<form ref="form">`, HTML5 validation will be triggered on the form before `submit`.
-- `submit`: a submit handle that should be called by user action (e.g. with `<form @submit.prevent="submit">` or with `<button @click="submit">`)
-- `submitting`: a `Ref<boolean>`, which is `true` while the form is being submitted.
-- `submitted`: a `Ref<boolean>`, which is `true` after the form has been successfully submitted.
-- `errors`: a `Ref<valibot.FlatErrors | undefined>`, the flat list of errors as returned by Valibot (or set manually).
+The form element ref.
+
+Using it with `<form ref="form">` will enable HTML5 validation on submit.
+
+### `submit`
+
+The actual form submit function that you should call with something like:
+
+- `<form @submit.prevent="submit">`
+- `<button @click="submit">`
+
+It will:
+
+- Run HTML5 validation (if the form ref is set).
+- Run valibot validation (if the schema is provided).
+- Call submit callback (if provided).
+
+Arguments passed to this submit function will be passed to the submit callback, prepended with (possibly validated) form input (unless using the shortcut variant of useForm).
+
+During execution, `submitting` is true. After successfull execution, `submitted` is true.
+
+### `submitting`
+
+Is the form submit callback executing at the moment?
+
+Use this to disable submit button.
+
+Also, `useForm` will not perform submit if it sees this is `true`.
+
+Type: `Ref<boolean>`.
+
+### `submitted`
+
+Has the form been successfully submitted?
+
+Feel free to reset. `useForm` doesn't depend on this value.
+
+Type: `Ref<boolean>`.
+
+### `errors`
+
+Validation errors, either coming from schema validation, or set manually in the submit callback.
+
+Type: `Ref<FlatErrors?>`.
 
 ## Submit with arguments
 
@@ -125,7 +194,7 @@ and then:
 </form>
 ```
 
-In the shortcut form, it works the same but there is no `input` argument in the callback:
+In the shortcut variant, it works the same but there is no `input` argument in the callback:
 
 ```ts
 const { submit, submitting } = useForm(

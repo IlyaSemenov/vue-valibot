@@ -9,23 +9,27 @@ import {
 
 export interface FormComposable<Args extends any[], Result> {
 	/**
-	 * The form element reference.
+	 * The form element ref.
 	 *
-	 * Providing it to <form ref="form"> will call HTML5 validation on submit.
+	 * Using it with `<form ref="form">` will enable HTML5 validation on submit.
 	 */
 	form: Ref<HTMLFormElement | undefined>
 	/**
-	 * Submit form:
+	 * The actual form submit function that you should call with something like:
 	 *
-	 * - run HTML5 validation (if the reference it set)
-	 * - run valibot validation (if the schema is provided)
-	 * - call submit callback (if provided)
+	 * - `<form @submit.prevent="submit">`
+	 * - `<button @click="submit">`
+	 *
+	 * It will:
+	 *
+	 * - Run HTML5 validation (if the form ref is set).
+	 * - Run valibot validation (if the schema is provided).
+	 * - Call submit callback (if provided).
 	 *
 	 * Arguments passed to this submit function will be passed to the submit callback,
 	 * prepended with (possibly validated) form input (unless using the shortcut variant of useForm).
 	 *
 	 * During execution, `submitting` is true.
-	 *
 	 * After successfull execution, `submitted` is true.
 	 */
 	submit: (...args: Args) => Promise<Result | undefined>
@@ -33,12 +37,12 @@ export interface FormComposable<Args extends any[], Result> {
 	 * Is the form submit callback executing at the moment?
 	 *
 	 * Use this to disable submit button.
+	 *
+	 * Also, `useForm` will not perform submit if it sees this is `true`.
 	 */
 	submitting: Ref<boolean>
 	/**
 	 * Has the form been successfully submitted?
-	 *
-	 * Use this to disable submit button during success redirects or similar post-submit events.
 	 *
 	 * Feel free to reset. `useForm` doesn't depend on this value.
 	 */
@@ -52,6 +56,11 @@ export interface FormComposable<Args extends any[], Result> {
 }
 
 interface BaseOptions {
+	/**
+	 * Error callback.
+	 *
+	 * Called (and awaited) if the validation fails, or if `errors.value` was set by the submit handler.
+	 */
 	onErrors?: (errors: FlatErrors) => any
 }
 
@@ -64,12 +73,25 @@ type SubmitCallback<Args extends any[], Result> = (
  */
 export function useForm<Input, Args extends any[], Result>(
 	options: BaseOptions & {
+		/**
+		 * Input value, or ref, or a getter. Will be passed to `submit` as is.
+		 */
 		input?: MaybeRefOrGetter<Input>
+		/**
+		 * Input value, or ref, or a getter. Will be passed to `submit` as is.
+		 *
+		 * @deprecated Use `input` instead.
+		 */
 		fields?: MaybeRefOrGetter<Input>
 		schema?: never
 		/**
 		 * Form submit callback.
-		 * The first argument is `input`, the rest arguments (if any) are the submit function arguments.
+		 *
+		 * Only called if:
+		 * - Form is not being submitted at the moment (submitting.value is falsy).
+		 * - HTML5 validation passes (if enabled).
+		 *
+		 * The first argument is the input, the rest arguments are the submit function arguments.
 		 *
 		 * During execution, `submitting` is true.
 		 * After successfull execution, `submitted` is true.
@@ -85,13 +107,29 @@ export function useForm<Input, Args extends any[], Result>(
  */
 export function useForm<Input, Args extends any[], Result>(
 	options: BaseOptions & {
+		/**
+		 * Input value, or ref, or a getter for the data to be validated.
+		 */
 		input?: unknown
+		/**
+		 * Input value, or ref, or a getter for the data to be validated.
+		 *
+		 * @deprecated Use `input` instead.
+		 */
 		fields?: unknown
+		/**
+		 * Valibot schema.
+		 */
 		schema?: BaseSchema<unknown, Input> | BaseSchemaAsync<unknown, Input>
 		/**
-		 * Form submit callback. Called only if the validation succeeds.
+		 * Form submit callback.
 		 *
-		 * The first argument is the validated input, the rest arguments (if any) are the submit function arguments.
+		 * Only called if:
+		 * - Form is not being submitted at the moment (submitting.value is falsy).
+		 * - HTML5 validation passes (if enabled).
+		 * - Valibot validation passes.
+		 *
+		 * The first argument is the validated input, the rest arguments are the submit function arguments.
 		 *
 		 * During execution, `submitting` is true.
 		 * After successfull execution, `submitted` is true.
@@ -107,7 +145,12 @@ export function useForm<Args extends any[], Result>(
 	/**
 	 * Form submit callback.
 	 *
-	 * The arguments (if any) are the submit function arguments.
+	 * Only called if:
+	 * - Form is not being submitted at the moment (submitting.value is falsy).
+	 * - HTML5 validation passes (if enabled).
+	 * - Valibot validation passes.
+	 *
+	 * The arguments are the submit function arguments.
 	 *
 	 * During execution, `submitting` is true.
 	 * After successfull execution, `submitted` is true.
