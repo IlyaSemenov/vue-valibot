@@ -74,6 +74,10 @@ const {
   schema,
   submit,
   onErrors,
+  submit,
+  submitting,
+  submitted,
+  errors,
 })
 ```
 
@@ -107,6 +111,12 @@ After successfull execution, `submitted` is true.
 (Optional) Error callback.
 
 Called (and awaited) if the validation fails, or if `errors.value` was set by the submit handler.
+
+### `form`, `submitting`, `submitted`, `errors`
+
+Normally, `useForm` will create and return these refs (see below), but you may optionally provide your own.
+
+This could be used e.g. to share the single `submitting` flag between multiple forms.
 
 ## Shortcut variant
 

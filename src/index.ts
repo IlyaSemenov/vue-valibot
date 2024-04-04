@@ -62,6 +62,22 @@ interface BaseOptions {
 	 * Called (and awaited) if the validation fails, or if `errors.value` was set by the submit handler.
 	 */
 	onErrors?: (errors: FlatErrors) => any
+	/**
+	 * User-provided ref for `form` return value.
+	 */
+	form?: Ref<HTMLFormElement | undefined>
+	/**
+	 * User-provided ref for `submitting` return value.
+	 */
+	submitting?: Ref<boolean>
+	/**
+	 * User-provided ref for `submitted` return value.
+	 */
+	submitted?: Ref<boolean>
+	/**
+	 * User-provided ref for `errors` return value.
+	 */
+	errors?: Ref<FlatErrors | undefined>
 }
 
 type SubmitCallback<Args extends any[], Result> = (
@@ -173,12 +189,12 @@ export function useForm<Input, Args extends any[], Result>(
 	const directSubmit =
 		typeof optionsOrSubmit === "function" ? optionsOrSubmit : undefined
 	const { schema } = options
-	const form = ref<HTMLFormElement>()
+	const form = options.form ?? ref<HTMLFormElement>()
 	// TODO: type using FlatErrors<S> from the schema
 	// Please test carefully, as blindly using a schema generic was breaking type inference for submit(data: ValidInput)
-	const errors = ref<FlatErrors>()
-	const submitting = ref(false)
-	const submitted = ref(false)
+	const errors = options.errors ?? ref<FlatErrors>()
+	const submitting = options.submitting ?? ref(false)
+	const submitted = options.submitted ?? ref(false)
 
 	async function submit(...args: Args) {
 		if (submitting.value) {

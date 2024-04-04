@@ -256,3 +256,34 @@ describe("onErrors", () => {
 		expect(callbackErrors.value).toMatchObject({ root: ["Input required."] })
 	})
 })
+
+test("user-provided refs", async () => {
+	const form = ref()
+	const submitting = ref(false)
+	const submitted = ref(false)
+	const errors = ref<v.FlatErrors>()
+	const input = ref("")
+	const {
+		form: form1,
+		submit,
+		submitting: submitting1,
+		submitted: submitted1,
+		errors: errors1,
+	} = useForm({
+		input,
+		schema: v.string(),
+		submit() {
+			//
+		},
+		form,
+		submitting,
+		submitted,
+		errors,
+	})
+	expect(form1).toBe(form)
+	expect(submitting1).toBe(submitting)
+	expect(submitted1).toBe(submitted)
+	expect(errors1).toBe(errors)
+	await submit()
+	expect(submitted.value).toBe(true)
+})
