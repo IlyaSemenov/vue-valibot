@@ -1,5 +1,11 @@
 # vue-valibot-form
 
+## 1.6.0
+
+### Minor Changes
+
+- 3de0e14: User-provided `form`, `submitting`, `submitted`, `errors` refs (#13).
+
 ## 1.5.0
 
 ### Minor Changes
