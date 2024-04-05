@@ -75,6 +75,8 @@ const {
   submit,
   onErrors,
   submit,
+  // Optional defaults for the return values.
+  form,
   submitting,
   submitted,
   errors,
