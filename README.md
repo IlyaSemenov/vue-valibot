@@ -117,7 +117,23 @@ Called (and awaited) if the validation fails, or if `errors.value` was set by th
 
 Normally, `useForm` will create and return these refs (see below), but you may optionally provide your own.
 
-This could be used e.g. to share the single `submitting` flag between multiple forms.
+For example, this could be used to share the single `submitting` flag between multiple forms:
+
+```ts
+const submitting = ref(false)
+
+const { submit: submit1 } = useForm({
+  submitting,
+  async submit() { ... }
+})
+
+const { submit: submit2 } = useForm({
+  submitting,
+  async submit() { ... }
+})
+
+// `submitting` will be true during submit of either form.
+```
 
 ## Shortcut variant
 
