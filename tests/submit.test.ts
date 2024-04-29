@@ -72,6 +72,24 @@ describe("input", () => {
 	})
 })
 
+test("dynamic schema", async () => {
+	let minValue: number
+	const input = ref(1)
+	const { submit, errors } = useForm({
+		input,
+		schema: () => v.number([v.minValue(minValue, `Min value: ${minValue}.`)]),
+	})
+	minValue = 2
+	await submit()
+	expect(errors.value).toMatchObject({ root: ["Min value: 2."] })
+	minValue = 3
+	await submit()
+	expect(errors.value).toMatchObject({ root: ["Min value: 3."] })
+	minValue = 1
+	await submit()
+	expect(errors.value).toBeUndefined()
+})
+
 test("no schema", async () => {
 	const input = reactive({ foo: "" })
 	const { submit, errors } = useForm({

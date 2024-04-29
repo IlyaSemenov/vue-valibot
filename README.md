@@ -90,7 +90,7 @@ const {
 
 ### `schema`
 
-(Optional) Valibot schema.
+(Optional) Valibot schema (or a function that returns a schema, such as when the schema depends on the context).
 
 ### `submit`
 

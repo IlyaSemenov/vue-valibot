@@ -97,3 +97,14 @@ useForm({
 		foo: v.string(),
 	}),
 })
+
+// Test dynamic schema
+useForm({
+	schema: () =>
+		v.object({
+			foo: v.string(),
+		}),
+	submit(input) {
+		expectType<{ foo: string }>(input)
+	},
+})

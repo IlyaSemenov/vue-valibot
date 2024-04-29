@@ -7,6 +7,12 @@ import {
 	safeParseAsync,
 } from "valibot"
 
+type BaseSchemaMaybeAsync<TInput, TOutput> =
+	| BaseSchema<TInput, TOutput>
+	| BaseSchemaAsync<TInput, TOutput>
+
+type MaybeGetter<T> = T | (() => T)
+
 export interface FormComposable<Args extends any[], Result> {
 	/**
 	 * The form element ref.
@@ -136,7 +142,7 @@ export function useForm<Input, Args extends any[], Result>(
 		/**
 		 * Valibot schema.
 		 */
-		schema?: BaseSchema<unknown, Input> | BaseSchemaAsync<unknown, Input>
+		schema?: MaybeGetter<BaseSchemaMaybeAsync<unknown, Input>>
 		/**
 		 * Form submit callback.
 		 *
@@ -179,7 +185,7 @@ export function useForm<Input, Args extends any[], Result>(
 		| (BaseOptions & {
 				input?: unknown
 				fields?: unknown
-				schema?: BaseSchema<unknown, Input> | BaseSchemaAsync<unknown, Input>
+				schema?: MaybeGetter<BaseSchemaMaybeAsync<unknown, Input>>
 				submit?: SubmitCallback<[unknown, ...Args], Result>
 		  })
 		| SubmitCallback<Args, Result>,
@@ -209,7 +215,12 @@ export function useForm<Input, Args extends any[], Result>(
 		submitting.value = true
 		try {
 			const input = toValue(options.input ?? options.fields)
-			const res = schema ? await safeParseAsync(schema, input) : undefined
+			const res = schema
+				? await safeParseAsync(
+						typeof schema === "function" ? schema() : schema,
+						input,
+				  )
+				: undefined
 			if (res && !res.success) {
 				errors.value = flatten(res.issues)
 				await options.onErrors?.(errors.value)
