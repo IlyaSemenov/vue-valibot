@@ -1,5 +1,11 @@
 # vue-valibot-form
 
+## 1.7.0
+
+### Minor Changes
+
+- 63c828b: Create dynamic schema with a getter function.
+
 ## 1.6.0
 
 ### Minor Changes
