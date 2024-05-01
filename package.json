@@ -9,10 +9,15 @@
     "type": "git",
     "url": "https://github.com/IlyaSemenov/vue-valibot-form"
   },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "main": "dist/index.cjs",
-  "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "source": "src/index.ts",
   "files": [
     "!src/**/*.test.*",
     "dist",
