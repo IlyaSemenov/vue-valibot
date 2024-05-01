@@ -37,9 +37,9 @@
   "devDependencies": {
     "@antfu/eslint-config": "^2.16.1",
     "@changesets/cli": "^2.26.2",
-    "@tsconfig/recommended": "^1.0.3",
     "@vue/reactivity": "^3.3.4",
     "husky": "^9.0.11",
+    "tsconfig-vite-node": "^1.1.2",
     "tsd": "^0.29.0",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2",
