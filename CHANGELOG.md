@@ -1,5 +1,11 @@
 # vue-valibot-form
 
+## 1.7.1
+
+### Patch Changes
+
+- 47dfc55: Fix ESM export in package.json.
+
 ## 1.7.0
 
 ### Minor Changes
