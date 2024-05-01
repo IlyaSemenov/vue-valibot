@@ -11,15 +11,15 @@ devDependencies:
   '@changesets/cli':
     specifier: ^2.26.2
     version: 2.26.2
-  '@tsconfig/recommended':
-    specifier: ^1.0.3
-    version: 1.0.3
   '@vue/reactivity':
     specifier: ^3.3.4
     version: 3.3.4
   husky:
     specifier: ^9.0.11
     version: 9.0.11
+  tsconfig-vite-node:
+    specifier: ^1.1.2
+    version: 1.1.2
   tsd:
     specifier: ^0.29.0
     version: 0.29.0
@@ -811,10 +811,6 @@ packages:
     transitivePeerDependencies:
       - supports-color
       - typescript
-    dev: true
-
-  /@tsconfig/recommended@1.0.3:
-    resolution: {integrity: sha512-+jby/Guq9H8O7NWgCv6X8VAiQE8Dr/nccsCtL74xyHKhu2Knu5EAKmOZj3nLCnLm1KooUzKY+5DsnGVqhM8/wQ==}
     dev: true
 
   /@tsd/typescript@5.2.2:
@@ -4274,6 +4270,10 @@ packages:
         optional: true
     dependencies:
       typescript: 5.2.2
+    dev: true
+
+  /tsconfig-vite-node@1.1.2:
+    resolution: {integrity: sha512-7QOQ0Rq6NrRjQVPVETQlGsEf6CkHjD+Xxio5EnPe/+IZabhdmaTZ3iRxaHBuEfWKyA8CnjmjLxat263+Pd1Iyw==}
     dev: true
 
   /tsd@0.29.0:
