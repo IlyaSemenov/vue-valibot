@@ -21,7 +21,7 @@
   "scripts": {
     "build": "tsup",
     "lint": "eslint --fix '**/*.{cjs,js,ts}'",
-    "prepare": "husky install",
+    "prepare": "husky",
     "prepublishOnly": "pnpm build",
     "test": "vitest run && tsd"
   },
@@ -35,7 +35,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
-    "husky": "^8.0.3",
+    "husky": "^9.0.11",
     "lint-staged": "^14.0.1",
     "prettier": "^3.0.3",
     "tsd": "^0.29.0",
