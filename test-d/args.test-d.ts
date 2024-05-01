@@ -11,9 +11,9 @@ const { submit: submitWithNumberAndBoolean } = useForm({
 	},
 })
 // @ts-expect-error arg1 is required
-submitWithNumberAndPossiblyBoolean()
+submitWithNumberAndBoolean()
 // @ts-expect-error arg2 is required
-submitWithNumberAndPossiblyBoolean(123)
+submitWithNumberAndBoolean(123)
 submitWithNumberAndBoolean(123, true)
 
 // Test that additional optional args can be consumed
