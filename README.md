@@ -124,12 +124,12 @@ const submitting = ref(false)
 
 const { submit: submit1 } = useForm({
   submitting,
-  async submit() { ... }
+  async submit() { /* ... */ }
 })
 
 const { submit: submit2 } = useForm({
   submitting,
-  async submit() { ... }
+  async submit() { /* ... */ }
 })
 
 // `submitting` will be true during submit of either form.
@@ -243,7 +243,7 @@ If you throw `SubmitError` from the submit handler, it will be intercepted and i
 This could be useful together with `onError`:
 
 ```ts
-import { useForm, SubmitError } from "vue-valibot-form"
+import { SubmitError, useForm } from "vue-valibot-form"
 
 // Note: no need to expose { errors } on the script level.
 const { submit } = useForm({

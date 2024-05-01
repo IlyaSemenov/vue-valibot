@@ -4,11 +4,10 @@ import { useForm } from "vue-valibot-form"
 
 // Test that additional args are consumed
 const { submit: submitWithNumberAndBoolean } = useForm({
-	schema: v.string(),
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	async submit(input, arg1: number, arg2: boolean) {
-		expectType<string>(input)
-	},
+  schema: v.string(),
+  async submit(input, _arg1: number, _arg2: boolean) {
+    expectType<string>(input)
+  },
 })
 // @ts-expect-error arg1 is required
 submitWithNumberAndBoolean()
@@ -18,11 +17,10 @@ submitWithNumberAndBoolean(123, true)
 
 // Test that additional optional args can be consumed
 const { submit: submitWithNumberAndPossiblyBoolean } = useForm({
-	schema: v.string(),
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	async submit(input, arg1: number, arg2?: boolean) {
-		expectType<string>(input)
-	},
+  schema: v.string(),
+  async submit(input, _arg1: number, _arg2?: boolean) {
+    expectType<string>(input)
+  },
 })
 // @ts-expect-error arg1 is required
 submitWithNumberAndPossiblyBoolean()

@@ -1,13 +1,13 @@
 import { expectType } from "tsd"
-import * as v from "valibot"
+import type * as v from "valibot"
 import { useForm } from "vue-valibot-form"
 
 useForm({
-	onErrors() {},
+  onErrors() {},
 })
 
 useForm({
-	onErrors(errors) {
-		expectType<v.FlatErrors>(errors)
-	},
+  onErrors(errors) {
+    expectType<v.FlatErrors>(errors)
+  },
 })

@@ -1,22 +1,22 @@
 {
   "name": "vue-valibot-form",
-  "description": "Minimalistic Vue3 composable for handling form submit",
+  "type": "module",
   "version": "1.7.0",
+  "description": "Minimalistic Vue3 composable for handling form submit",
+  "author": "Ilya Semenov",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/IlyaSemenov/vue-valibot-form"
   },
-  "author": "Ilya Semenov",
-  "license": "MIT",
-  "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "source": "src/index.ts",
   "files": [
+    "!src/**/*.test.*",
     "dist",
-    "src",
-    "!src/**/*.test.*"
+    "src"
   ],
   "scripts": {
     "build": "tsup",
@@ -25,28 +25,21 @@
     "prepublishOnly": "pnpm build",
     "test": "vitest run && tsd"
   },
+  "peerDependencies": {
+    "@vue/reactivity": "^3",
+    "valibot": ">=0.19 <1"
+  },
   "devDependencies": {
+    "@antfu/eslint-config": "^2.16.1",
     "@changesets/cli": "^2.26.2",
     "@tsconfig/recommended": "^1.0.3",
-    "@typescript-eslint/eslint-plugin": "^6.7.4",
-    "@typescript-eslint/parser": "^6.7.4",
     "@vue/reactivity": "^3.3.4",
-    "eslint": "^8.51.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "eslint-plugin-simple-import-sort": "^10.0.0",
     "husky": "^9.0.11",
-    "lint-staged": "^14.0.1",
-    "prettier": "^3.0.3",
     "tsd": "^0.29.0",
     "tsup": "^7.2.0",
     "typescript": "^5.2.2",
     "valibot": "^0.19.0",
     "vite-tsconfig-paths": "^4.2.1",
     "vitest": "^0.34.6"
-  },
-  "peerDependencies": {
-    "@vue/reactivity": "^3",
-    "valibot": ">=0.19 <1"
   }
 }
