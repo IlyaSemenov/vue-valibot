@@ -1,7 +1,7 @@
 {
   "name": "vue-valibot-form",
   "type": "module",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "Minimalistic Vue3 composable for handling form submit",
   "author": "Ilya Semenov",
   "license": "MIT",
