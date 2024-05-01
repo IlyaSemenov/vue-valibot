@@ -21,8 +21,8 @@ devDependencies:
     specifier: ^1.1.2
     version: 1.1.2
   tsd:
-    specifier: ^0.29.0
-    version: 0.29.0
+    specifier: ^0.31.0
+    version: 0.31.0
   tsup:
     specifier: ^8.0.2
     version: 8.0.2(typescript@5.2.2)
@@ -1157,8 +1157,8 @@ packages:
       - typescript
     dev: true
 
-  /@tsd/typescript@5.2.2:
-    resolution: {integrity: sha512-VtjHPAKJqLJoHHKBDNofzvQB2+ZVxjXU/Gw6INAS9aINLQYVsxfzrQ2s84huCeYWZRTtrr7R0J7XgpZHjNwBCw==}
+  /@tsd/typescript@5.4.5:
+    resolution: {integrity: sha512-saiCxzHRhUrRxQV2JhH580aQUZiKQUXI38FcAcikcfOomAil4G4lxT0RfrrKywoAYP/rqAdYXYmNRLppcd+hQQ==}
     engines: {node: '>=14.17'}
     dev: true
 
@@ -4732,12 +4732,12 @@ packages:
     resolution: {integrity: sha512-7QOQ0Rq6NrRjQVPVETQlGsEf6CkHjD+Xxio5EnPe/+IZabhdmaTZ3iRxaHBuEfWKyA8CnjmjLxat263+Pd1Iyw==}
     dev: true
 
-  /tsd@0.29.0:
-    resolution: {integrity: sha512-5B7jbTj+XLMg6rb9sXRBGwzv7h8KJlGOkTHxY63eWpZJiQ5vJbXEjL0u7JkIxwi5EsrRE1kRVUWmy6buK/ii8A==}
+  /tsd@0.31.0:
+    resolution: {integrity: sha512-yjBiQ5n8OMv/IZOuhDjBy0ZLCoJ7rky/RxRh5W4sJ0oNNCU/kf6s3puPAkGNi59PptDdkcpUm+RsKSdjR2YbNg==}
     engines: {node: '>=14.16'}
     hasBin: true
     dependencies:
-      '@tsd/typescript': 5.2.2
+      '@tsd/typescript': 5.4.5
       eslint-formatter-pretty: 4.1.0
       globby: 11.1.0
       jest-diff: 29.7.0
