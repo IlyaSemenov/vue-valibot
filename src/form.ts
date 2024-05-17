@@ -1,18 +1,9 @@
 import type { MaybeRefOrGetter, Ref } from "@vue/reactivity"
 import { ref, toValue } from "@vue/reactivity"
-import type {
-  BaseSchema,
-  BaseSchemaAsync,
-  FlatErrors,
-} from "valibot"
-import {
-  flatten,
-  safeParseAsync,
-} from "valibot"
+import type { FlatErrors } from "valibot"
+import { flatten, safeParseAsync } from "valibot"
 
-type BaseSchemaMaybeAsync<TInput, TOutput> =
-  | BaseSchema<TInput, TOutput>
-  | BaseSchemaAsync<TInput, TOutput>
+import type { BaseSchemaMaybeAsync } from "./valibot"
 
 type MaybeGetter<T> = T | (() => T)
 
