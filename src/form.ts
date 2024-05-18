@@ -93,12 +93,6 @@ export function useForm<Input, Args extends any[], Result>(
      * Input value, or ref, or a getter. Will be passed to `submit` as is.
      */
     input?: MaybeRefOrGetter<Input>
-    /**
-     * Input value, or ref, or a getter. Will be passed to `submit` as is.
-     *
-     * @deprecated Use `input` instead.
-     */
-    fields?: MaybeRefOrGetter<Input>
     schema?: never
     /**
      * Form submit callback.
@@ -127,12 +121,6 @@ export function useForm<Input, Args extends any[], Result>(
      * Input value, or ref, or a getter for the data to be validated.
      */
     input?: unknown
-    /**
-     * Input value, or ref, or a getter for the data to be validated.
-     *
-     * @deprecated Use `input` instead.
-     */
-    fields?: unknown
     /**
      * Valibot schema.
      */
@@ -178,7 +166,6 @@ export function useForm<Input, Args extends any[], Result>(
   optionsOrSubmit?:
     | (BaseOptions & {
       input?: unknown
-      fields?: unknown
       schema?: MaybeGetter<BaseSchemaMaybeAsync<unknown, Input>>
       submit?: SubmitCallback<[unknown, ...Args], Result>
     })
@@ -208,7 +195,7 @@ export function useForm<Input, Args extends any[], Result>(
     }
     submitting.value = true
     try {
-      const input = toValue(options.input ?? options.fields)
+      const input = toValue(options.input)
       const res = schema
         ? await safeParseAsync(
           typeof schema === "function" ? schema() : schema,
