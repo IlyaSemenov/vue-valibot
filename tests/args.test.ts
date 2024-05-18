@@ -3,9 +3,9 @@ import { expect, test } from "vitest"
 import { useForm } from "vue-valibot-form"
 
 test("args", async () => {
-  const fields = { foo: "" }
+  const input = { foo: "" }
   const { submit, errors } = useForm({
-    fields,
+    input,
     schema: v.object({
       foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
     }),
@@ -23,7 +23,7 @@ test("args", async () => {
   expect(await submit()).toBeUndefined()
   expect(errors.value).toStrictEqual({ nested: { foo: ["Please enter foo."] } })
 
-  fields.foo = " test"
+  input.foo = " test"
   expect(await submit()).toStrictEqual({ input: { foo: "test" } })
   expect(errors.value).toBeUndefined()
 
