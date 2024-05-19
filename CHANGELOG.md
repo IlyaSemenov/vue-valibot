@@ -1,5 +1,14 @@
 # vue-valibot-form
 
+## 2.0.0
+
+### Major Changes
+
+- 1721dce: Remove deprecated option `fields`.
+- 847ceb0: Pass `input` to submit callback only if there is composable input and/or schema (#15). Otherwise, pass `submit` function arguments immediately. **BREAKING CHANGE:** in v1, `input` was always passed unless using the shortcut callback variant.
+
+  Type `errors` as `FlatErrors<TSchema>` when using Valibot schema (#12).
+
 ## 1.7.1
 
 ### Patch Changes
