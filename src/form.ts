@@ -1,13 +1,13 @@
 import type { MaybeRefOrGetter, Ref } from "@vue/reactivity"
 import { ref, toValue } from "@vue/reactivity"
-import type { FlatErrors } from "valibot"
+import type { FlatErrors, Output } from "valibot"
 import { flatten, safeParseAsync } from "valibot"
 
 import type { BaseSchemaMaybeAsync } from "./valibot"
 
 type MaybeGetter<T> = T | (() => T)
 
-export interface FormComposable<Args extends any[], Result> {
+export interface UseFormReturn<TSchema extends BaseSchemaMaybeAsync, TArgs extends any[], TResult> {
   /**
    * The form element ref.
    *
@@ -32,7 +32,7 @@ export interface FormComposable<Args extends any[], Result> {
    * During execution, `submitting` is true.
    * After successfull execution, `submitted` is true.
    */
-  submit: (...args: Args) => Promise<Result | undefined>
+  submit: (...args: TArgs) => Promise<TResult | undefined>
   /**
    * Is the form submit callback executing at the moment?
    *
@@ -52,16 +52,16 @@ export interface FormComposable<Args extends any[], Result> {
    *
    * Set it in the submit callback to report submit errors.
    */
-  errors: Ref<FlatErrors | undefined>
+  errors: Ref<FlatErrors<TSchema> | undefined>
 }
 
-interface BaseOptions {
+interface BaseOptions<TSchema extends BaseSchemaMaybeAsync> {
   /**
    * Error callback.
    *
    * Called (and awaited) if the validation fails, or if `errors.value` was set by the submit handler.
    */
-  onErrors?: (errors: FlatErrors) => any
+  onErrors?: (errors: FlatErrors<TSchema>) => any
   /**
    * User-provided ref for `form` return value.
    */
@@ -77,22 +77,23 @@ interface BaseOptions {
   /**
    * User-provided ref for `errors` return value.
    */
-  errors?: Ref<FlatErrors | undefined>
+  errors?: Ref<FlatErrors<TSchema> | undefined>
 }
 
 type SubmitCallback<Args extends any[], Result> = (
   ...args: Args
 ) => Result | PromiseLike<Result>
 
+//
+// No input.
+//
+
 /**
  * Vue3 composable for handling form submit.
  */
-export function useForm<Input, Args extends any[], Result>(
-  options: BaseOptions & {
-    /**
-     * Input value, or ref, or a getter. Will be passed to `submit` as is.
-     */
-    input?: MaybeRefOrGetter<Input>
+export function useForm<Args extends unknown[], Result>(
+  options: BaseOptions<any> & {
+    input?: never
     schema?: never
     /**
      * Form submit callback.
@@ -101,22 +102,58 @@ export function useForm<Input, Args extends any[], Result>(
      * - Form is not being submitted at the moment (submitting.value is falsy).
      * - HTML5 validation passes (if enabled).
      *
-     * The first argument is the input, the rest arguments are the submit function arguments.
+     * The arguments are the submit function arguments.
      *
      * During execution, `submitting` is true.
      * After successfull execution, `submitted` is true.
      */
-    submit?: SubmitCallback<[Input, ...Args], Result>
+    submit?: SubmitCallback<Args, Result>
   },
-): FormComposable<Args, Result>
+): UseFormReturn<any, Args, Result>
+
+//
+// Input, no schema.
+//
 
 /**
  * Vue3 composable for handling form submit.
  *
  * Validates the input using valibot.
  */
-export function useForm<Input, Args extends any[], Result>(
-  options: BaseOptions & {
+export function useForm<TInput, TArgs extends any[], TResult>(
+  options: BaseOptions<any> & {
+    /**
+     * Input value, or ref, or a getter for the submit input data.
+     */
+    input: MaybeRefOrGetter<TInput>
+    schema?: never
+    /**
+     * Form submit callback.
+     *
+     * Only called if:
+     * - Form is not being submitted at the moment (submitting.value is falsy).
+     * - HTML5 validation passes (if enabled).
+     *
+     * The first argument is the form input, the rest arguments are the submit function arguments.
+     *
+     * During execution, `submitting` is true.
+     * After successfull execution, `submitted` is true.
+     */
+    submit?: SubmitCallback<[TInput, ...TArgs], TResult>
+  },
+): UseFormReturn<any, TArgs, TResult>
+
+//
+// Input + schema.
+//
+
+/**
+ * Vue3 composable for handling form submit.
+ *
+ * Validates the input using valibot.
+ */
+export function useForm<TSchema extends BaseSchemaMaybeAsync, TArgs extends any[], TResult>(
+  options: BaseOptions<TSchema> & {
     /**
      * Input value, or ref, or a getter for the data to be validated.
      */
@@ -124,7 +161,7 @@ export function useForm<Input, Args extends any[], Result>(
     /**
      * Valibot schema.
      */
-    schema?: MaybeGetter<BaseSchemaMaybeAsync<unknown, Input>>
+    schema: MaybeGetter<TSchema>
     /**
      * Form submit callback.
      *
@@ -138,52 +175,58 @@ export function useForm<Input, Args extends any[], Result>(
      * During execution, `submitting` is true.
      * After successfull execution, `submitted` is true.
      */
-    submit?: SubmitCallback<[Input, ...Args], Result>
+    submit?: SubmitCallback<[Output<TSchema>, ...TArgs], TResult>
   },
-): FormComposable<Args, Result>
+): UseFormReturn<TSchema, TArgs, TResult>
+
+//
+// No input, callback only.
+//
 
 /**
  * Vue3 composable for handling form submit.
  */
-export function useForm<Args extends any[], Result>(
+export function useForm<TArgs extends any[], TResult>(
 /**
  * Form submit callback.
  *
  * Only called if:
  * - Form is not being submitted at the moment (submitting.value is falsy).
  * - HTML5 validation passes (if enabled).
- * - Valibot validation passes.
  *
  * The arguments are the submit function arguments.
  *
  * During execution, `submitting` is true.
  * After successfull execution, `submitted` is true.
  */
-  submit?: SubmitCallback<Args, Result>,
-): FormComposable<Args, Result>
+  submit?: SubmitCallback<TArgs, TResult>,
+): UseFormReturn<any, TArgs, TResult>
 
-export function useForm<Input, Args extends any[], Result>(
+//
+// Implementation.
+//
+
+export function useForm(
   optionsOrSubmit?:
-    | (BaseOptions & {
+    | (BaseOptions<any> & {
       input?: unknown
-      schema?: MaybeGetter<BaseSchemaMaybeAsync<unknown, Input>>
-      submit?: SubmitCallback<[unknown, ...Args], Result>
+      schema?: MaybeGetter<BaseSchemaMaybeAsync>
+      submit?: SubmitCallback<any, any>
     })
-    | SubmitCallback<Args, Result>,
-): FormComposable<Args, Result> {
+    | SubmitCallback<any, any>,
+): UseFormReturn<any, any, any> {
   const options
     = (typeof optionsOrSubmit === "function" ? undefined : optionsOrSubmit) ?? {}
-  const directSubmit
-    = typeof optionsOrSubmit === "function" ? optionsOrSubmit : undefined
-  const { schema } = options
+  const submitCallback
+    = typeof optionsOrSubmit === "function" ? optionsOrSubmit : options?.submit
+  const hasInput = options.input !== undefined
+
   const form = options.form ?? ref<HTMLFormElement>()
-  // TODO: type using FlatErrors<S> from the schema
-  // Please test carefully, as blindly using a schema generic was breaking type inference for submit(data: ValidInput)
   const errors = options.errors ?? ref<FlatErrors>()
   const submitting = options.submitting ?? ref(false)
   const submitted = options.submitted ?? ref(false)
 
-  async function submit(...args: Args) {
+  async function submit(...args: unknown[]) {
     if (submitting.value) {
       return
     }
@@ -196,21 +239,17 @@ export function useForm<Input, Args extends any[], Result>(
     submitting.value = true
     try {
       const input = toValue(options.input)
-      const res = schema
-        ? await safeParseAsync(
-          typeof schema === "function" ? schema() : schema,
-          input,
-        )
-        : undefined
-      if (res && !res.success) {
-        errors.value = flatten(res.issues)
+      const schema = toValue(options.schema)
+      const parseResult = schema ? await safeParseAsync(schema, input) : undefined
+      if (parseResult && !parseResult.success) {
+        errors.value = flatten(parseResult.issues)
         await options.onErrors?.(errors.value)
       } else {
         const returnValue = await Promise.resolve()
           .then(() =>
-            directSubmit
-              ? directSubmit(...args)
-              : options.submit?.(res ? res.output : input, ...args),
+            hasInput || parseResult
+              ? submitCallback?.(parseResult ? parseResult.output : input, ...args)
+              : submitCallback?.(...args),
           )
           .catch((err) => {
             if (err instanceof SubmitError) {

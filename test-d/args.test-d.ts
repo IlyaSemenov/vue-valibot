@@ -1,28 +1,31 @@
 import { expectType } from "tsd"
 import * as v from "valibot"
+import { test } from "vitest"
 import { useForm } from "vue-valibot-form"
 
-// Test that additional args are consumed
-const { submit: submitWithNumberAndBoolean } = useForm({
-  schema: v.string(),
-  async submit(input, _arg1: number, _arg2: boolean) {
-    expectType<string>(input)
-  },
+test("callback args", () => {
+  const { submit } = useForm({
+    schema: v.string(),
+    async submit(input, _arg1: number, _arg2: boolean) {
+      expectType<string>(input)
+    },
+  })
+  // @ts-expect-error arg1 is required
+  submit()
+  // @ts-expect-error arg2 is required
+  submit(123)
+  submit(123, true)
 })
-// @ts-expect-error arg1 is required
-submitWithNumberAndBoolean()
-// @ts-expect-error arg2 is required
-submitWithNumberAndBoolean(123)
-submitWithNumberAndBoolean(123, true)
 
-// Test that additional optional args can be consumed
-const { submit: submitWithNumberAndPossiblyBoolean } = useForm({
-  schema: v.string(),
-  async submit(input, _arg1: number, _arg2?: boolean) {
-    expectType<string>(input)
-  },
+test("optional callback arg", () => {
+  const { submit } = useForm({
+    schema: v.string(),
+    async submit(input, _arg1: number, _arg2?: boolean) {
+      expectType<string>(input)
+    },
+  })
+  // @ts-expect-error arg1 is required
+  submit()
+  submit(123)
+  submit(123, true)
 })
-// @ts-expect-error arg1 is required
-submitWithNumberAndPossiblyBoolean()
-submitWithNumberAndPossiblyBoolean(123)
-submitWithNumberAndPossiblyBoolean(123, true)

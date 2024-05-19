@@ -33,7 +33,7 @@ const { form, submit, submitting, errors } = useForm({
     // Input is validated against the schema and typed accordingly.
     const res = await api.post(input)
     if (!res) {
-      // errors is Ref<valibot.FlatErrors>
+      // errors is valibot.FlatErrors ref typed with schema fields.
       errors.value = { root: ["Failed to submit."], nested: {} }
     }
   },
@@ -102,7 +102,7 @@ Only called if:
 - HTML5 validation passes (if enabled).
 - Valibot validation passes (if used).
 
-The first argument is the (possibly validated) input, the rest arguments are the submit function arguments.
+The first argument is the (possibly validated) composable input, the rest arguments are the submit function arguments. If `input` was not provided, it's not prepended to the submit function arguments.
 
 During execution, `submitting` is true.
 After successfull execution, `submitted` is true.
@@ -221,7 +221,7 @@ and then:
 </form>
 ```
 
-In the shortcut variant, it works the same but there is no `input` argument in the callback:
+If there was no `input` composable option, all arguments are passed as is:
 
 ```ts
 const { submit, submitting } = useForm(
