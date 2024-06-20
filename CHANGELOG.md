@@ -1,5 +1,15 @@
 # vue-valibot
 
+## 3.0.0
+
+### Major Changes
+
+- 790d7f7: Rename package to `vue-valibot`.
+
+### Minor Changes
+
+- 790d7f7: Add `useParse` composable.
+
 ## 2.0.0
 
 ### Major Changes
