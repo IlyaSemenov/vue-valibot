@@ -1,6 +1,6 @@
-# vue-valibot-form
+# vue-valibot
 
-Minimalistic Vue3 composable for handling form submit, with optional validation using [valibot](https://valibot.dev/).
+A set of simple Vue3 composables for handling form submit, with optional [valibot](https://valibot.dev/) integration.
 
 Unlike FormKit, VeeValidate and others, keeps things simple and doesn't interfere with neither data storage nor the UI workflow.
 
@@ -9,7 +9,7 @@ Full Typescript support with type inference.
 ## Install
 
 ```sh
-npm install vue-valibot-form
+npm install vue-valibot
 ```
 
 ## Use
@@ -17,7 +17,7 @@ npm install vue-valibot-form
 ```vue
 <script setup lang="ts">
 import * as v from "valibot"
-import { useForm } from "vue-valibot-form"
+import { useForm } from "vue-valibot"
 
 // Store input data as you prefer, such as with Vue reactive or ref.
 const data = reactive({
@@ -56,9 +56,7 @@ const { form, submit, submitting, errors } = useForm({
 </template>
 ```
 
-## API
-
-The package provides a single Vue3 composable:
+## useForm composable
 
 ```ts
 const {
@@ -82,7 +80,7 @@ const {
 })
 ```
 
-## Composable options
+## useForm options
 
 ### `input`
 
@@ -135,7 +133,7 @@ const { submit: submit2 } = useForm({
 // `submitting` will be true during submit of either form.
 ```
 
-## Shortcut variant
+## useForm shortcut
 
 All the composable options are optional. If the only option you need is `submit`, there is a shortcut variant:
 
@@ -146,7 +144,7 @@ const { submit, submitting } = useForm(async () => {
 })
 ```
 
-## Composable return values
+## useForm return
 
 ### `form`
 
@@ -243,7 +241,7 @@ If you throw `SubmitError` from the submit handler, it will be intercepted and i
 This could be useful together with `onError`:
 
 ```ts
-import { SubmitError, useForm } from "vue-valibot-form"
+import { SubmitError, useForm } from "vue-valibot"
 
 // Note: no need to expose { errors } on the script level.
 const { submit } = useForm({
@@ -260,4 +258,32 @@ const { submit } = useForm({
     console.error(errors)
   },
 })
+```
+
+## useParse
+
+`useParse` reactively runs Valibot validation on every input change.
+
+It could be used together with `useForm` or independently.
+
+```vue
+<script setup lang="ts">
+const input = reactive({
+  age: "" as number | "", // for v-input
+})
+
+const { errors: presubmitErrors } = useParse({
+  input,
+  schema: v.object({
+    age: v.number(),
+  })
+})
+</script>
+
+<template>
+  <form @submit="...">
+    Age: <input v-model.number="age" type="number">
+    <button type="submit" :disabled="!presubmitErrors">Submit</button>
+  </form>
+</template>
 ```

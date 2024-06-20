@@ -3,7 +3,7 @@
   "compilerOptions": {
     "lib": ["DOM", "ESNext"],
     "paths": {
-      "vue-valibot-form": ["./src"]
+      "vue-valibot": ["./src"]
     }
   }
 }

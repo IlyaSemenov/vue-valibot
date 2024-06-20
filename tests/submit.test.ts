@@ -1,7 +1,7 @@
 import { reactive, ref } from "@vue/reactivity"
 import * as v from "valibot"
 import { describe, expect, test } from "vitest"
-import { SubmitError, useForm } from "vue-valibot-form"
+import { SubmitError, useForm } from "vue-valibot"
 
 describe("input", () => {
   test("plain", async () => {

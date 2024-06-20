@@ -1,7 +1,7 @@
 import { expectType } from "tsd"
 import * as v from "valibot"
 import { test } from "vitest"
-import { useForm } from "vue-valibot-form"
+import { useForm } from "vue-valibot"
 
 test("untyped errors without input", () => {
   const { errors } = useForm()

@@ -2,7 +2,7 @@ import { ref } from "@vue/reactivity"
 import { expectType } from "tsd"
 import * as v from "valibot"
 import { test } from "vitest"
-import { useForm } from "vue-valibot-form"
+import { useForm } from "vue-valibot"
 
 test("plain input with schema", () => {
   useForm({

@@ -1,13 +1,13 @@
 {
-  "name": "vue-valibot-form",
+  "name": "vue-valibot",
   "type": "module",
   "version": "2.0.0",
-  "description": "Minimalistic Vue3 composable for handling form submit",
+  "description": "Vue3 composables for handling form submit with optional valibot integration",
   "author": "Ilya Semenov",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/IlyaSemenov/vue-valibot-form"
+    "url": "https://github.com/IlyaSemenov/vue-valibot"
   },
   "exports": {
     ".": {
@@ -32,12 +32,14 @@
   },
   "peerDependencies": {
     "@vue/reactivity": "^3",
+    "@vue/runtime-core": "^3",
     "valibot": ">=0.19 <1"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.16.1",
     "@changesets/cli": "^2.26.2",
-    "@vue/reactivity": "^3.3.4",
+    "@vue/reactivity": "^3.4.29",
+    "@vue/runtime-core": "^3.4.29",
     "husky": "^9.0.11",
     "tsconfig-vite-node": "^1.1.2",
     "tsd": "^0.31.0",

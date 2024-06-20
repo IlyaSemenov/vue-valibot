@@ -1,7 +1,7 @@
 import { ref } from "@vue/reactivity"
 import * as v from "valibot"
 import { expect, test } from "vitest"
-import { useForm } from "vue-valibot-form"
+import { useForm } from "vue-valibot"
 
 test("without input", async () => {
   const { submit } = useForm({

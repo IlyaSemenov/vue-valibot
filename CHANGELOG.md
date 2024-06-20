@@ -1,4 +1,4 @@
-# vue-valibot-form
+# vue-valibot
 
 ## 2.0.0
 

@@ -3,9 +3,7 @@ import { ref, toValue } from "@vue/reactivity"
 import type { FlatErrors, Output } from "valibot"
 import { flatten, safeParseAsync } from "valibot"
 
-import type { BaseSchemaMaybeAsync } from "./valibot"
-
-type MaybeGetter<T> = T | (() => T)
+import type { BaseSchemaMaybeAsync } from "./types"
 
 export interface UseFormReturn<TSchema extends BaseSchemaMaybeAsync, TArgs extends any[], TResult> {
   /**
@@ -155,13 +153,13 @@ export function useForm<TInput, TArgs extends any[], TResult>(
 export function useForm<TSchema extends BaseSchemaMaybeAsync, TArgs extends any[], TResult>(
   options: BaseOptions<TSchema> & {
     /**
-     * Input value, or ref, or a getter for the data to be validated.
+     * Input data to be validated (plain value, ref or getter).
      */
     input?: unknown
     /**
-     * Valibot schema.
+     * Valibot schema (plain value, ref or getter).
      */
-    schema: MaybeGetter<TSchema>
+    schema: MaybeRefOrGetter<TSchema>
     /**
      * Form submit callback.
      *
@@ -210,7 +208,7 @@ export function useForm(
   optionsOrSubmit?:
     | (BaseOptions<any> & {
       input?: unknown
-      schema?: MaybeGetter<BaseSchemaMaybeAsync>
+      schema?: MaybeRefOrGetter<BaseSchemaMaybeAsync>
       submit?: SubmitCallback<any, any>
     })
     | SubmitCallback<any, any>,
