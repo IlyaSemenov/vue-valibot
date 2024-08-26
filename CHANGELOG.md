@@ -1,5 +1,11 @@
 # vue-valibot
 
+## 3.0.1
+
+### Patch Changes
+
+- 9285d84: Update valibot peer dependency semver to exclude incompatible versions (0.28+).
+
 ## 3.0.0
 
 ### Major Changes
