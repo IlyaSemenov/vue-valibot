@@ -1,6 +1,7 @@
 import { reactive, ref } from "@vue/reactivity"
 import * as v from "valibot"
 import { describe, expect, test } from "vitest"
+import type { GenericFlatErrors } from "vue-valibot"
 import { SubmitError, useForm } from "vue-valibot"
 
 describe("input", () => {
@@ -9,7 +10,7 @@ describe("input", () => {
     const { submit, errors } = useForm({
       input,
       schema: v.object({
-        foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
+        foo: v.pipe(v.string(), v.trim(), v.minLength(1, "Please enter foo.")),
       }),
       async submit(input) {
         return { input }
@@ -30,7 +31,7 @@ describe("input", () => {
     const { submit, errors } = useForm({
       input,
       schema: v.object({
-        foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
+        foo: v.pipe(v.string(), v.trim(), v.minLength(1, "Please enter foo.")),
       }),
       async submit(input) {
         return { input }
@@ -51,7 +52,7 @@ describe("input", () => {
     const { submit, errors } = useForm({
       input,
       schema: v.object({
-        foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
+        foo: v.pipe(v.string(), v.trim(), v.minLength(1, "Please enter foo.")),
       }),
       async submit(input) {
         return { input }
@@ -77,7 +78,7 @@ test("dynamic schema", async () => {
   const input = ref(1)
   const { submit, errors } = useForm({
     input,
-    schema: () => v.number([v.minValue(minValue, `Min value: ${minValue}.`)]),
+    schema: () => v.pipe(v.number(), v.minValue(minValue, `Min value: ${minValue}.`)),
   })
   minValue = 2
   await submit()
@@ -107,7 +108,7 @@ test("no submit", async () => {
   const { submit, errors } = useForm({
     input,
     schema: v.object({
-      foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
+      foo: v.pipe(v.string(), v.trim(), v.minLength(1, "Please enter foo.")),
     }),
   })
   expect(await submit()).toBeUndefined()
@@ -139,7 +140,7 @@ describe("submitted", () => {
     const { submit, submitted } = useForm({
       input,
       schema: v.object({
-        foo: v.string([v.minLength(1)]),
+        foo: v.pipe(v.string(), v.minLength(1)),
       }),
     })
     await submit()
@@ -205,10 +206,10 @@ describe("submitted", () => {
 describe("onErrors", () => {
   test("schema errors", async () => {
     const input = ref("")
-    const callbackErrors = ref<v.FlatErrors>()
+    const callbackErrors = ref<GenericFlatErrors>()
     const { submit } = useForm({
       input,
-      schema: v.string([v.minLength(1, "Input required.")]),
+      schema: v.pipe(v.string(), v.minLength(1, "Input required.")),
       onErrors(errors) {
         callbackErrors.value = errors
       },
@@ -219,7 +220,7 @@ describe("onErrors", () => {
 
   test("manual errors", async () => {
     const input = ref("")
-    const callbackErrors = ref<v.FlatErrors>()
+    const callbackErrors = ref<GenericFlatErrors>()
     const { submit, errors } = useForm({
       input,
       schema: v.string(),
@@ -238,7 +239,7 @@ describe("onErrors", () => {
 
   test("generic exception", async () => {
     const input = ref("")
-    const callbackErrors = ref<v.FlatErrors>()
+    const callbackErrors = ref<GenericFlatErrors>()
     const { submit } = useForm({
       input,
       schema: v.string(),
@@ -257,7 +258,7 @@ describe("onErrors", () => {
 
   test("submitError", async () => {
     const input = ref("")
-    const callbackErrors = ref<v.FlatErrors>()
+    const callbackErrors = ref<GenericFlatErrors>()
     const { submit } = useForm({
       input,
       schema: v.string(),
@@ -279,7 +280,7 @@ test("user-provided refs", async () => {
   const form = ref()
   const submitting = ref(false)
   const submitted = ref(false)
-  const errors = ref<v.FlatErrors>()
+  const errors = ref<GenericFlatErrors>()
   const input = ref("")
   const {
     form: form1,

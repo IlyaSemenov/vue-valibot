@@ -20,7 +20,7 @@ test("parse", async () => {
   expect(output.value).toBeUndefined()
   expect(errors.value).toMatchObject({
     nested: {
-      age: ["Invalid type"],
+      age: ["Invalid type: Expected number but received \"\""],
     },
   })
 

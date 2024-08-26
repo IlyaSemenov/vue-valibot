@@ -1,5 +1,5 @@
-import type { BaseSchema, BaseSchemaAsync } from "valibot"
+import type { FlatErrors, GenericSchema, GenericSchemaAsync } from "valibot"
 
-export type BaseSchemaMaybeAsync<TInput = any, TOutput = TInput> =
-  | BaseSchema<TInput, TOutput>
-  | BaseSchemaAsync<TInput, TOutput>
+export type GenericSchemaMaybeAsync = GenericSchema | GenericSchemaAsync
+
+export type GenericFlatErrors = FlatErrors<any>

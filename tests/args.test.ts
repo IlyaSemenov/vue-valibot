@@ -31,7 +31,7 @@ test("input with schema", async () => {
   const { submit, errors } = useForm({
     input,
     schema: v.object({
-      foo: v.string([v.toTrimmed(), v.minLength(1, "Please enter foo.")]),
+      foo: v.pipe(v.string(), v.trim(), v.minLength(1, "Please enter foo.")),
     }),
     async submit(input, allowTest = true, error = "test not allowed.") {
       if (!allowTest && input.foo === "test") {
@@ -91,7 +91,7 @@ test("undefined input", async () => {
 test("undefined input with schema", async () => {
   const { submit } = useForm({
     input: undefined,
-    schema: v.transform(v.any(), () => 123),
+    schema: v.pipe(v.any(), v.transform(() => 123)),
     async submit(input, arg: string) {
       return { input, arg }
     },

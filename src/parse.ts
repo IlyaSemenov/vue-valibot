@@ -1,10 +1,10 @@
 import { ref, toValue } from "@vue/reactivity"
 import type { MaybeRefOrGetter, Ref, WatchOptionsBase } from "@vue/runtime-core"
 import { watchEffect } from "@vue/runtime-core"
-import type { BaseSchema, FlatErrors, Output, SafeParseResult } from "valibot"
+import type { FlatErrors, GenericSchema, InferOutput, SafeParseResult } from "valibot"
 import { flatten, safeParse } from "valibot"
 
-export function useParse<TSchema extends BaseSchema>(options: {
+export function useParse<TSchema extends GenericSchema>(options: {
   /**
    * Input data to be validated (plain value, ref or getter).
    */
@@ -15,7 +15,7 @@ export function useParse<TSchema extends BaseSchema>(options: {
   schema: MaybeRefOrGetter<TSchema>
 }, watchOptions?: WatchOptionsBase) {
   const result = ref() as Ref<SafeParseResult<TSchema>> // Knowingly not empty.
-  const output = ref<Output<TSchema>>()
+  const output = ref<InferOutput<TSchema>>()
   const errors = ref<FlatErrors<TSchema>>()
   watchEffect(() => {
     const res = safeParse(toValue(options.schema), toValue(options.input))
@@ -25,7 +25,7 @@ export function useParse<TSchema extends BaseSchema>(options: {
       errors.value = undefined
     } else {
       output.value = undefined
-      errors.value = flatten(res.issues)
+      errors.value = flatten<TSchema>(res.issues)
     }
   }, watchOptions)
   return { result, output, errors }

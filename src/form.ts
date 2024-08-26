@@ -1,11 +1,11 @@
 import type { MaybeRefOrGetter, Ref } from "@vue/reactivity"
 import { ref, toValue } from "@vue/reactivity"
-import type { FlatErrors, Output } from "valibot"
+import type { FlatErrors, InferOutput } from "valibot"
 import { flatten, safeParseAsync } from "valibot"
 
-import type { BaseSchemaMaybeAsync } from "./types"
+import type { GenericFlatErrors, GenericSchemaMaybeAsync } from "./types"
 
-export interface UseFormReturn<TSchema extends BaseSchemaMaybeAsync, TArgs extends any[], TResult> {
+export interface UseFormReturn<TSchema extends GenericSchemaMaybeAsync, TArgs extends any[], TResult> {
   /**
    * The form element ref.
    *
@@ -53,7 +53,7 @@ export interface UseFormReturn<TSchema extends BaseSchemaMaybeAsync, TArgs exten
   errors: Ref<FlatErrors<TSchema> | undefined>
 }
 
-interface BaseOptions<TSchema extends BaseSchemaMaybeAsync> {
+interface BaseOptions<TSchema extends GenericSchemaMaybeAsync> {
   /**
    * Error callback.
    *
@@ -150,7 +150,7 @@ export function useForm<TInput, TArgs extends any[], TResult>(
  *
  * Validates the input using valibot.
  */
-export function useForm<TSchema extends BaseSchemaMaybeAsync, TArgs extends any[], TResult>(
+export function useForm<TSchema extends GenericSchemaMaybeAsync, TArgs extends any[], TResult>(
   options: BaseOptions<TSchema> & {
     /**
      * Input data to be validated (plain value, ref or getter).
@@ -173,7 +173,7 @@ export function useForm<TSchema extends BaseSchemaMaybeAsync, TArgs extends any[
      * During execution, `submitting` is true.
      * After successfull execution, `submitted` is true.
      */
-    submit?: SubmitCallback<[Output<TSchema>, ...TArgs], TResult>
+    submit?: SubmitCallback<[InferOutput<TSchema>, ...TArgs], TResult>
   },
 ): UseFormReturn<TSchema, TArgs, TResult>
 
@@ -208,7 +208,7 @@ export function useForm(
   optionsOrSubmit?:
     | (BaseOptions<any> & {
       input?: unknown
-      schema?: MaybeRefOrGetter<BaseSchemaMaybeAsync>
+      schema?: MaybeRefOrGetter<GenericSchemaMaybeAsync>
       submit?: SubmitCallback<any, any>
     })
     | SubmitCallback<any, any>,
@@ -220,7 +220,7 @@ export function useForm(
   const hasInput = options.input !== undefined
 
   const form = options.form ?? ref<HTMLFormElement>()
-  const errors = options.errors ?? ref<FlatErrors>()
+  const errors = options.errors ?? ref<GenericFlatErrors>()
   const submitting = options.submitting ?? ref(false)
   const submitted = options.submitted ?? ref(false)
 
@@ -272,7 +272,7 @@ export function useForm(
 }
 
 export class SubmitError extends Error {
-  constructor(public errors: FlatErrors) {
+  constructor(public errors: GenericFlatErrors) {
     super("Error submitting form.")
   }
 }
