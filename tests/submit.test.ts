@@ -256,7 +256,7 @@ describe("onErrors", () => {
     expect(callbackErrors.value).toBeUndefined()
   })
 
-  test("submitError", async () => {
+  test("catch SubmitError", async () => {
     const input = ref("")
     const callbackErrors = ref<GenericFlatErrors>()
     const { submit } = useForm({

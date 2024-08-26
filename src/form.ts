@@ -271,6 +271,7 @@ export function useForm(
   return { form, submit, submitting, submitted, errors }
 }
 
+/** @deprecated Do not use, simply set `errors` directly. */
 export class SubmitError extends Error {
   constructor(public errors: GenericFlatErrors) {
     super("Error submitting form.")

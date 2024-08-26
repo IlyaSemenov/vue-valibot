@@ -234,22 +234,19 @@ submit(10, "foo")
 submit(20, "bar", true)
 ```
 
-## SubmitError
+## Custom submit errors
 
-If you throw `SubmitError` from the submit handler, it will be intercepted and its argument will be put into `errors.value`.
+You can set `errors` inside the submit handler. This will be treated the same way as if errors were produced by the schema.
 
-This could be useful together with `onError`:
+In particular, this could be used together with `onError`:
 
 ```ts
-import { SubmitError, useForm } from "vue-valibot"
-
-// Note: no need to expose { errors } on the script level.
-const { submit } = useForm({
+const { submit, errors } = useForm({
   input,
   schema,
   submit(input) {
     if (!validateInput(input)) {
-      throw new SubmitError({ root: ["Input is invalid."] })
+      errors.value = { root: ["Input is invalid."] }
     }
   },
   onErrors(errors) {
