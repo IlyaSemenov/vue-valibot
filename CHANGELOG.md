@@ -1,5 +1,12 @@
 # vue-valibot
 
+## 3.1.0
+
+### Minor Changes
+
+- eaa3a00: Update to Valibot 0.32+ with the new pipe API.
+- 92da316: Deprecate `SubmitError` (#23).
+
 ## 3.0.1
 
 ### Patch Changes
