@@ -162,7 +162,7 @@ describe("submitted", () => {
       schema: v.string(),
       submit(input) {
         if (!input) {
-          errors.value = { root: ["Input required."], nested: {} }
+          errors.value = { root: ["Input required."] }
         }
       },
     })
@@ -226,7 +226,7 @@ describe("onErrors", () => {
       schema: v.string(),
       submit(input) {
         if (!input) {
-          errors.value = { root: ["Input required."], nested: {} }
+          errors.value = { root: ["Input required."] }
         }
       },
       onErrors(errors) {
@@ -264,7 +264,7 @@ describe("onErrors", () => {
       schema: v.string(),
       submit(input) {
         if (!input) {
-          throw new SubmitError({ root: ["Input required."], nested: {} })
+          throw new SubmitError({ root: ["Input required."] })
         }
       },
       onErrors(errors) {

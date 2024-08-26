@@ -34,7 +34,7 @@ const { form, submit, submitting, errors } = useForm({
     const res = await api.post(input)
     if (!res) {
       // errors is valibot.FlatErrors ref typed with schema fields.
-      errors.value = { root: ["Failed to submit."], nested: {} }
+      errors.value = { root: ["Failed to submit."] }
     }
   },
 })
@@ -249,7 +249,7 @@ const { submit } = useForm({
   schema,
   submit(input) {
     if (!validateInput(input)) {
-      throw new SubmitError({ root: ["Input is invalid."], nested: {} })
+      throw new SubmitError({ root: ["Input is invalid."] })
     }
   },
   onErrors(errors) {
