@@ -2,6 +2,7 @@
   "name": "vue-valibot",
   "type": "module",
   "version": "3.0.0",
+  "packageManager": "pnpm@9.8.0",
   "description": "Vue3 composables for handling form submit with optional valibot integration",
   "author": "Ilya Semenov",
   "license": "MIT",
@@ -23,6 +24,10 @@
     "dist",
     "src"
   ],
+  "engines": {
+    "node": "22",
+    "pnpm": "9"
+  },
   "scripts": {
     "build": "tsup",
     "lint": "eslint --fix '**/*.{cjs,js,ts}'",
