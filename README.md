@@ -26,8 +26,9 @@ const data = reactive({
 
 const { form, submit, submitting, errors } = useForm({
   input: data,
+  // Schema is optional, but usually recommended.
   schema: v.object({
-    foo: v.string([v.toTrimmed(), v.minLength(1)]),
+    foo: v.pipe(v.string(), v.trim(), v.minLength(1, "Please enter foo.")),
   }),
   async submit(input) {
     // Input is validated against the schema and typed accordingly.
