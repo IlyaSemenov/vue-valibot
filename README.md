@@ -47,7 +47,7 @@ const { form, submit, submitting, errors } = useForm({
     <input v-model="data.foo" />
 
     <!-- Field errors. -->
-    <div v-for="error in errors?.nested.foo">{{ error }}</div>
+    <div v-for="error in errors?.nested?.foo">{{ error }}</div>
 
     <button type="submit" :disabled="submitting">Submit</button>
 

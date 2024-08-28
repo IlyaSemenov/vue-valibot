@@ -30,7 +30,7 @@ test("untyped errors with input", () => {
       expectType<v.FlatErrors<typeof schema>>(errors)
       expectType<[string, ...string[]] | undefined>(errors.nested?.foo)
       // @ts-expect-error Propery bar does not exist
-      errors.nested.bar = ["error"]
+      expectType<[string, ...string[]] | undefined>(errors.nested?.bar)
     },
   })
   expectType<v.FlatErrors<typeof schema> | undefined>(errors.value)
