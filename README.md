@@ -20,15 +20,15 @@ import * as v from "valibot"
 import { useForm } from "vue-valibot"
 
 // Store input data as you prefer, such as with Vue reactive or ref.
-const data = reactive({
-  foo: "",
+const fields = reactive({
+  name: "",
 })
 
 const { form, submit, submitting, errors } = useForm({
-  input: data,
+  input: fields,
   // Schema is optional, but usually recommended.
   schema: v.object({
-    foo: v.pipe(v.string(), v.trim(), v.minLength(1, "Please enter foo.")),
+    name: v.pipe(v.string(), v.trim(), v.minLength(1, "Please enter your name.")),
   }),
   async submit(input) {
     // Input is validated against the schema and typed accordingly.
@@ -44,10 +44,10 @@ const { form, submit, submitting, errors } = useForm({
 <template>
   <form ref="form" @submit.prevent="submit">
     <!-- No fancy syntax for input fields, just use what you prefer. -->
-    <input v-model="data.foo" />
+    Name: <input v-model="fields.name" />
 
     <!-- Field errors. -->
-    <div v-for="error in errors?.nested?.foo">{{ error }}</div>
+    <div v-for="error in errors?.nested?.name">{{ error }}</div>
 
     <button type="submit" :disabled="submitting">Submit</button>
 
