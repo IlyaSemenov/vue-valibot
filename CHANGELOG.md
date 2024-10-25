@@ -1,5 +1,11 @@
 # vue-valibot
 
+## 3.1.1
+
+### Patch Changes
+
+- 4137642: Remove `"engines"` from `package.json`.
+
 ## 3.1.0
 
 ### Minor Changes
