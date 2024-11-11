@@ -39,8 +39,8 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
       valibot:
-        specifier: ^0.39.0
-        version: 0.39.0(typescript@5.4.5)
+        specifier: ^1.0.0-beta.3
+        version: 1.0.0-beta.3(typescript@5.4.5)
       vite-tsconfig-paths:
         specifier: ^4.3.2
         version: 4.3.2(typescript@5.4.5)(vite@5.2.10)
@@ -3115,8 +3115,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  valibot@0.39.0:
-    resolution: {integrity: sha512-d+vE8SDRNy9zKg6No5MHz2tdz8H6CW8X3OdqYdmlhnoqQmEoM6Hu0hJUrZv3tPSVrzZkIIMCtdCQtMzcM6NCWw==}
+  valibot@1.0.0-beta.3:
+    resolution: {integrity: sha512-PRknKVj2249cF8Pxqil1dahkVHgyaPDq++Y8sA96R5lx4nYnVazs11kefOsRVD3PSygYJG5q2MEdEm7kuSWa+g==}
     peerDependencies:
       typescript: '>=5'
     peerDependenciesMeta:
@@ -6734,7 +6734,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  valibot@0.39.0(typescript@5.4.5):
+  valibot@1.0.0-beta.3(typescript@5.4.5):
     optionalDependencies:
       typescript: 5.4.5
 
