@@ -101,7 +101,7 @@ Only called if:
 - HTML5 validation passes (if enabled).
 - Valibot validation passes (if used).
 
-The first argument is the (possibly validated) composable input, the rest arguments are the submit function arguments. If `input` was not provided, it's not prepended to the submit function arguments.
+If `input` and/or `schema` were provided, the first argument passed to the submit callback is the (possibly validated) form input. The rest of the arguments are the submit function arguments.
 
 During execution, `submitting` is true.
 After successfull execution, `submitted` is true.
@@ -166,7 +166,7 @@ It will:
 - Run valibot validation (if the schema is provided).
 - Call submit callback (if provided).
 
-Arguments passed to this submit function will be passed to the submit callback, prepended with (possibly validated) form input (unless using the shortcut variant of useForm).
+Arguments passed to this submit function are passed to the submit callback, possibly prepended with form input (if `input` and/or `schema` were provided).
 
 During execution, `submitting` is true. After successfull execution, `submitted` is true.
 
