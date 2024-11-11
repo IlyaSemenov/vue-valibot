@@ -1,5 +1,11 @@
 # vue-valibot
 
+## 3.1.2
+
+### Patch Changes
+
+- d77da39: Allow Valibot 1.0.0 as peer dependency.
+
 ## 3.1.1
 
 ### Patch Changes
